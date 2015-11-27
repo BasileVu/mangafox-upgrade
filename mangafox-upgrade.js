@@ -21,7 +21,7 @@ $(document).ready(function () {
 	bigImagesClickable();
 });
 
-// swap ACG and Bookmarks
+// Swaps ACG and Bookmarks in the menu.
 function swapACG() {
 	var last = $('#menu li').last();
 	
@@ -35,7 +35,7 @@ function swapACG() {
 	}
 }
 
-// load page via ajax if body empty
+// Loads page via ajax if the body tag is empty.
 function loadBlankPage() {
 	if ($('body').is(':empty')) {
 		$.get(window.location.href, function (res) {
@@ -44,7 +44,7 @@ function loadBlankPage() {
 	}
 }
 
-// automatically change pages when big image is clicked 2 times
+// Automatically change pages when big image is clicked 2 times.
 function bigImagesClickable() {
 	$('.read_img a').click(function () {
 		$(this).attr('onclick', '');
