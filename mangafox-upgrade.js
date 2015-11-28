@@ -93,7 +93,7 @@ $(document).ready(function () {
 	
 	// reading
 	loadBlankPage();
-	bigImagesClickable();
+	enlargeOnlyBigImages();
 });
 
 // Do not wait for the whole document to be ready
@@ -194,11 +194,13 @@ function loadBlankPage() {
 	}
 }
 
-// Automatically change pages when big image is clicked 2 times.
-function bigImagesClickable() {
-	$('.read_img a').click(function () {
-		$(this).attr('onclick', '');
-	});
+// Automatically enlarges big images.
+function enlargeOnlyBigImages() {
+	var img = $('.read_img img');
+	if (img.width() > img.height()) {
+		$('.read_img a').attr('onclick', '');
+		enlargeImage();
+	}
 }
 
 // Enlarges the current image to fill the viewport.
