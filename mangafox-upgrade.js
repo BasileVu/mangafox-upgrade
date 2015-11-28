@@ -319,8 +319,15 @@ function loadBlankPage() {
 
 // Enlarges the current image to fill the viewport.
 function enlargeImage(width) {
-	$('#viewer').css('width', width + 12 + 'px');
-	$('.read_img img').css('width', width + 'px');
+	var viewerWidth = width + 12;
+	
+	if ($(window).width() > viewerWidth) {
+		$('#viewer').css('width', width + 12 + 'px');
+		$('.read_img img').css('width', width + 'px');
+	} else {
+		$('#viewer').css('width', '98vw');
+		$('.read_img img').css('width', '95vw');
+	}
 }
 
 // Automatically enlarges big images.
