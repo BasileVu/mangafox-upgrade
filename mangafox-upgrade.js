@@ -179,7 +179,7 @@ var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
 var showMenu = lsPrefix + "show-menu";
 
 var options = {
-	design: {
+	upgrade: {
 		leftBookmark: {
 			description: "Move bookmarks tab to the right.",
 			value: lsPrefix + "left-bookmark"
@@ -209,7 +209,7 @@ var options = {
 
 // Done at start
 
-if (getLSValue(options.design.leftBookmark.value) != 0) {
+if (getLSValue(options.upgrade.leftBookmark.value) != 0) {
 	$(document).bind("DOMSubtreeModified", swapACG);
 }
 
@@ -219,7 +219,7 @@ $(document).ready(function () {
 	console.log("Mangafox upgrade successfully loaded.");
 	
 	// menu
-	if (getLSValue(options.design.leftBookmark.value) != 0) {
+	if (getLSValue(options.upgrade.leftBookmark.value) != 0) {
 		$(document).unbind("DOMSubtreeModified", swapACG);
 	}
 	
@@ -228,7 +228,7 @@ $(document).ready(function () {
 		loadBlankPage();
 	}
 		
-	if (getLSValue(options.design.autoEnlarge.value) != 0) {
+	if (getLSValue(options.upgrade.autoEnlarge.value) != 0) {
 		enlargeOnlyBigImages();
 	}
 });
@@ -366,11 +366,11 @@ function createMuMenu() {
 	var content = $('<div></div>').attr('id', "mu-menu-content");
 	var tabsMenu = $('<ul></ul>').attr('id', "mu-tabs-menu");
 	var tabs = [
-		$('<li class="mu-tab">Design</li>'),
+		$('<li class="mu-tab">Upgrades</li>'),
 		$('<li class="mu-tab">Bug Fixes</li>'),
 		$('<li class="mu-tab">Stats</li>') ];
 	var tabsContent = [
-		$('<div id="mu-design-tab" class="mu-tab-content"></div>'),
+		$('<div id="mu-upgrade-tab" class="mu-tab-content"></div>'),
 		$('<div id="mu-bug-tab" class="mu-tab-content"></div>'),
 		$('<div id="mu-stat-tab" class="mu-tab-content"></div>') ];
 	var credit = $('<p id="mu-menu-credits"><a href="https://github.com/Flagoul/mangafox-upgrade" target="_blank">Mangafox-Upgrade</a> @ 2015</p>');
@@ -411,7 +411,7 @@ function createMuMenu() {
 
 	/* Creation */
 
-	optionsTab(tabsContent[0], 'design');
+	optionsTab(tabsContent[0], 'upgrade');
 	optionsTab(tabsContent[1], 'bug');
 
 	content.append(tabsMenu);
