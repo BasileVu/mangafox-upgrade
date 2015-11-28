@@ -210,6 +210,11 @@ function createMuMenu() {
 	// Show/hide menu when deployer is clicked
 	deployer.click(function() {
 		$(this).parent().toggleClass('mu-menu-hide');
+		if ($(this).parent().hasClass('mu-menu-hide')) {
+			$(this).text('+');
+		} else {
+			$(this).text('-');
+		}
 	});
 
 	/* Creation */
