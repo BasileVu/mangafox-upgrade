@@ -207,11 +207,13 @@ var options = {
 ** Load **
 *********/
 
+// Done at start
+
 if (getLSValue(options.design.leftBookmark.value) != 0) {
 	$(document).bind("DOMSubtreeModified", swapACG);
 }
 
-
+// Done when DOM ready
 $(document).ready(function () {
 	
 	console.log("Mangafox upgrade successfully loaded.");
@@ -225,11 +227,19 @@ $(document).ready(function () {
 	if (getLSValue(options.bug.blankPage.value) != 0) {
 		loadBlankPage();
 	}
+	
+});
+
+// Done when everything ready
+$(window).load(function () {
+	
 	if (getLSValue(options.design.autoEnlarge.value) != 0) {
 		enlargeOnlyBigImages();
 	}
+	
+	preloadNext();
+	
 });
-
 
 // Do not wait for the whole document to be ready
 $('head').ready(function () {
@@ -310,18 +320,6 @@ function loadBlankPage() {
 	}
 }
 
-// Automatically enlarges big images.
-function enlargeOnlyBigImages() {
-	var img = $('.read_img img');
-	
-	img.load(function () {
-		if (img.width() > img.height()) {
-			$('.read_img a').attr('onclick', '');
-			enlargeImage();
-		}
-	});
-}
-
 // Enlarges the current image to fill the viewport.
 function enlargeImage() {
 	$('#viewer').css('width', '98vw');
@@ -332,12 +330,10 @@ function enlargeImage() {
 function enlargeOnlyBigImages() {
 	var img = $('.read_img img');
 	
-	$(window).load(function () {
-		if (img.width() > img.height()) {
-			$('.read_img a').attr('onclick', '');
-			enlargeImage();
-		}
-	});
+	if (img.width() > img.height()) {
+		$('.read_img a').attr('onclick', '');
+		enlargeImage();
+	}
 }
 
 // Preloads next image by putting it in the cache.
