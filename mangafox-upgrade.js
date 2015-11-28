@@ -318,6 +318,18 @@ function enlargeImage() {
 	$('.read_img img').css('width', '97vw');
 }
 
+// Automatically enlarges big images.
+function enlargeOnlyBigImages() {
+	var img = $('.read_img img');
+	
+	img.load(function () {
+		if (img.width() > img.height()) {
+			$('.read_img a').attr('onclick', '');
+			enlargeImage();
+		}
+	}());
+}
+
 
 // Create the menu for Mangafox-Upgrade
 function createMuMenu() {
