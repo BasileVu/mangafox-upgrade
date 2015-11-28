@@ -354,7 +354,21 @@ function enlargeOnlyBigImages() {
 
 // Preloads next image by putting it in the cache.
 function preloadNext() {
-	$.get($('.read_img a').attr('href'), function (nextPageHTML) {
+	
+	var pageList = $('.l').first();
+	var dropDown = pageList.children()[0];
+	var currentPage = dropDown.options[dropDown.selectedIndex].text;
+	var totalPages = pageList.text().match(/of ([0-9]+)/)[1];
+	
+	var chapterList = $('#top_chapter_list')[0];
+	var curChapter = chapterList.options[chapterList.selectedIndex + 1].value;
+	
+	var mangaPath = document.location.href.match(/(.+\/)v[0-9]+\/c[0-9]+\/[0-9]+\.html/)[1];
+	var nextChaptFirstHref = mangaPath + curChapter + "/1.html";
+
+	var nextPageHref = (currentPage != totalPages ? $('.read_img a').attr('href') : nextChaptFirstHref);
+	
+	$.get(nextPageHref, function (nextPageHTML) {
 		var readImgDiv = '<div class="read_img">';
 		var imgPathBegin = '<img src="';
 		
