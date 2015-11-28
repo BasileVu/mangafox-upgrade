@@ -227,18 +227,15 @@ $(document).ready(function () {
 	if (getLSValue(options.bug.blankPage.value) != 0) {
 		loadBlankPage();
 	}
-	
+		
+	if (getLSValue(options.design.autoEnlarge.value) != 0) {
+		enlargeOnlyBigImages();
+	}
 });
 
 // Done when everything ready
 $(window).load(function () {
-	
-	if (getLSValue(options.design.autoEnlarge.value) != 0) {
-		enlargeOnlyBigImages();
-	}
-	
 	preloadNext();
-	
 });
 
 // Do not wait for the whole document to be ready
@@ -328,9 +325,13 @@ function enlargeImage() {
 
 // Automatically enlarges big images.
 function enlargeOnlyBigImages() {
-	var img = $('.read_img img');
+	// We get the width and height of the image from the script
+	var regExp = /image_width *= *(\d+);.*image_height *= *(\d+);/gi;
+	var match = regExp.exec($('#footer ~ script').eq(0).html().replace(/(\r\n|\n|\r)/gm,""));
+	var width = match !== null ? parseInt(match[1]) : null;
+	var height = match !== null ? parseInt(match[2]) : null;
 	
-	if (img.width() > img.height()) {
+	if (width > height) {
 		$('.read_img a').attr('onclick', '');
 		enlargeImage();
 	}
