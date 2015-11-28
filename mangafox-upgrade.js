@@ -187,6 +187,10 @@ var options = {
 		autoEnlarge: {
 			description: "Automatically enlarge big images.",
 			value: lsPrefix + "auto-enlarge"
+		},
+		preloadNext: {
+			description: "Preload next image.",
+			value: lsPrefix + "preload-next"
 		}
 	},
 	bug: {
@@ -243,7 +247,9 @@ $(document).ready(function () {
 
 // Done when everything ready
 $(window).load(function () {
-	preloadNext();
+	if (getLSValue(options.upgrade.preloadNext.value) != 0) {
+		preloadNext();
+	}
 });
 
 // Do not wait for the whole document to be ready
