@@ -25,14 +25,14 @@ var css = `
 #mu-menu {
 	position: fixed;
 	z-index: 999;
-	width: 250px;
+	width: 279px;
 	height: 300px;
 	top: 0;
 	right: 0;
 }
 
 .mu-menu-hide {
-	right: -223px !important;
+	right: -252px !important;
 }
 
 #mu-menu-deployer {
@@ -69,11 +69,32 @@ var css = `
 	position: absolute;
 	top: 0;
 	right: 0;
-	width: 221px;
+	width: 250px;
 	height: 300px;
 	background-color: #DDDDDD;
 	border: solid #717D8C 2px;
 	border-right: none;
+}
+
+#mu-tabs-menu {
+	list-style: none;
+	margin-top: 2px;
+}
+
+.mu-tab {
+	float: left;
+	width: 80px;
+	height: 25px;
+	background-color: #666666;
+	margin-left: 2px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: white;
+	font-weight: bold;
+	line-height: 250%;
+	padding-left: 5px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;/
 }
 `;
 
@@ -137,6 +158,8 @@ function createMuMenu() {
 	var menu = $('<div></div>').attr('id', "mu-menu");
 	var deployer = $('<div></div>').attr('id', "mu-menu-deployer");
 	var content = $('<div></div>').attr('id', "mu-menu-content");
+	var tabsMenu = $('<ul><li class="mu-tab">Design</li><li class="mu-tab">Bug Fixes</li><li class="mu-tab">Stats</li></ul>')
+	.attr('id', "mu-tabs-menu");
 
 	// The menu id hidden when loaded
 	menu.addClass('mu-menu-hide');
@@ -150,6 +173,7 @@ function createMuMenu() {
 
 	/* Creation */
 
+	content.append(tabsMenu);
 	menu.append(deployer);
 	menu.append(content);
 	$('body').append(menu);
