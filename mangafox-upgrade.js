@@ -349,7 +349,7 @@ function enlargeOnlyBigImages() {
 // Create the menu for Mangafox-Upgrade
 function createMuMenu() {
 	var menu = $('<div></div>').attr('id', "mu-menu");
-	var deployer = $('<div>+</div>').attr('id', "mu-menu-deployer");
+	var deployer = $('<div>-</div>').attr('id', "mu-menu-deployer");
 	var content = $('<div></div>').attr('id', "mu-menu-content");
 	var tabsMenu = $('<ul></ul>').attr('id', "mu-tabs-menu");
 	var tabs = [
@@ -365,6 +365,7 @@ function createMuMenu() {
 	// Hides the menu depending on last access
 	if (getLSValue(showMenu) == 0) {
 		menu.addClass('mu-menu-hide');
+		menu.text('+');
 	}
 
 	// Set the default tab selected
