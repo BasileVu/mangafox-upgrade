@@ -21,6 +21,60 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 
 var css = `
 /* The following is the css for Mangafox-Upgrade */
+
+#mu-menu {
+	position: fixed;
+	z-index: 999;
+	width: 250px;
+	height: 300px;
+	top: 0;
+	right: 0;
+}
+
+.mu-menu-hide {
+	right: -223px !important;
+}
+
+#mu-menu-deployer {
+	position: absolute;
+	width: 25px;
+	height: 25px;
+	top: 0;
+	left: 0;
+	background-image: url("http://mangafox.me/favicon.ico");
+	background-repeat: no-repeat;
+	background-size: 25px 25px;
+	border: solid #717D8C 1px;
+}
+
+#mu-menu-deployer:hover {
+	border-color: #8AE305;
+	cursor: pointer;
+}
+
+#mu-menu-deployer:before {
+	position: absolute;
+	left: -1px;
+	top: -1px;
+	content: '';
+	border-top: 12px solid #717D8C;
+	border-right: 12px solid transparent;
+}
+
+#mu-menu-deployer:hover:before {
+	border-top-color: #8AE305;
+}
+
+#mu-menu-content {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 221px;
+	height: 300px;
+	background-color: #DDDDDD;
+	border: solid #717D8C 2px;
+	border-right: none;
+}
 `;
 
 
@@ -42,7 +96,8 @@ $(document).ready(function () {
 
 // Do not wait for the whole document to be ready
 $('head').ready(function () {
-	addCss(css);
+	// Once the css is loaded, we can safely add MuMenu
+	addCss(css, createMuMenu);
 });
 
 
@@ -52,7 +107,7 @@ $('head').ready(function () {
 **************/
 
 // Add css style in the head
-function addCss(css) {
+function addCss(css, callback) {
 	var style = $('head #mu-css');
 
 	// If the css does not exist, we create and add it
@@ -63,11 +118,34 @@ function addCss(css) {
 		.text(css);
 
 		$('head').append(style);
-		return;
+	} else {
+		// Otherwise we add the new css at the end
+		style.text(style.text() + css);
 	}
+	callback();
+}
 
-	// Otherwise we add the new css at the end
-	style.text(style.text() + css);
+// Create the menu for Mangafox-Upgrade
+function createMuMenu() {
+	var menu = $('<div></div>').attr('id', "mu-menu");
+	var deployer = $('<div></div>').attr('id', "mu-menu-deployer");
+	var content = $('<div></div>').attr('id', "mu-menu-content");
+
+	// The menu id hidden when loaded
+	menu.addClass('mu-menu-hide');
+
+	/* Events */
+
+	// Show/hide menu when deployer is clicked
+	deployer.click(function() {
+		$(this).parent().toggleClass('mu-menu-hide');
+	});
+
+	/* Creation */
+
+	menu.append(deployer);
+	menu.append(content);
+	$('body').append(menu);
 }
 
 // Swaps ACG and Bookmarks in the menu.
