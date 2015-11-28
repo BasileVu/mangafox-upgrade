@@ -81,12 +81,15 @@ var css = `
 ** Load **
 *********/
 
+$(document).bind("DOMSubtreeModified", swapACG);
+
+
 $(document).ready(function () {
 	
 	console.log("Mangafox upgrade successfully loaded.");
 	
 	// menu
-	swapACG();
+	$(document).unbind("DOMSubtreeModified", swapACG);
 	
 	// reading
 	loadBlankPage();
