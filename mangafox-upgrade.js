@@ -332,12 +332,12 @@ function enlargeImage() {
 function enlargeOnlyBigImages() {
 	var img = $('.read_img img');
 	
-	img.load(function () {
+	$(window).load(function () {
 		if (img.width() > img.height()) {
 			$('.read_img a').attr('onclick', '');
 			enlargeImage();
 		}
-	}());
+	});
 }
 
 
