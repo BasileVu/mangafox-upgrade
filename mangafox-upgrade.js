@@ -197,10 +197,13 @@ function loadBlankPage() {
 // Automatically enlarges big images.
 function enlargeOnlyBigImages() {
 	var img = $('.read_img img');
-	if (img.width() > img.height()) {
-		$('.read_img a').attr('onclick', '');
-		enlargeImage();
-	}
+	
+	img.load(function () {
+		if (img.width() > img.height()) {
+			$('.read_img a').attr('onclick', '');
+			enlargeImage();
+		}
+	});
 }
 
 // Enlarges the current image to fill the viewport.
