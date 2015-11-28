@@ -273,7 +273,7 @@ function enlargeOnlyBigImages() {
 			$('.read_img a').attr('onclick', '');
 			enlargeImage();
 		}
-	});
+	}());
 }
 
 // Enlarges the current image to fill the viewport.
