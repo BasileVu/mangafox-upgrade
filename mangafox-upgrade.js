@@ -200,7 +200,7 @@ var options = {
 		},
 		nextPage: {
 			description: "Re-enable next page change on big images.",
-			value: lsPrefix + "left-page"
+			value: lsPrefix + "next-page"
 		}
 	}
 };
@@ -239,8 +239,17 @@ $(document).ready(function () {
 	var chRegExp = /\/c\d+\/\d+.html$/i;
 	if (chRegExp.test(window.location.pathname)) {
 		console.log("ok");
+		
 		if (getLSValue(options.upgrade.autoEnlarge.value) != 0) {
-			enlargeOnlyBigImages();
+			enlargeOnlyBigImages();			
+		} else {
+			
+			// keep native enlarge but remove it after one click (after big images are enlarged)
+			if (getLSValue(options.bug.nextPage.value) != 0) {
+				$('.read_img').click(function () {
+					$('.read_img a').attr('onclick', '');
+				});
+			}
 		}
 	}
 });
@@ -353,7 +362,6 @@ function enlargeOnlyBigImages() {
 	var height = match !== null ? parseInt(match[2]) : null;
 	
 	if (width > height) {
-		$('.read_img a').attr('onclick', '');
 		enlargeImage(width);
 	}
 }
