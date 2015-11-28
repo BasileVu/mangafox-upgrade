@@ -318,9 +318,9 @@ function loadBlankPage() {
 }
 
 // Enlarges the current image to fill the viewport.
-function enlargeImage() {
-	$('#viewer').css('width', '98vw');
-	$('.read_img img').css('width', '97vw');
+function enlargeImage(width) {
+	$('#viewer').css('width', width + 12 + 'px');
+	$('.read_img img').css('width', width + 'px');
 }
 
 // Automatically enlarges big images.
@@ -333,7 +333,7 @@ function enlargeOnlyBigImages() {
 	
 	if (width > height) {
 		$('.read_img a').attr('onclick', '');
-		enlargeImage();
+		enlargeImage(width);
 	}
 }
 
