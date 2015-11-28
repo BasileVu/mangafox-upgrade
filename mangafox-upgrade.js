@@ -77,7 +77,6 @@ var css = `
 }
 `;
 
-
 /*********
 ** Load **
 *********/
@@ -100,6 +99,14 @@ $('head').ready(function () {
 	addCss(css, createMuMenu);
 });
 
+
+/***************
+**LocalStorage**
+****************/
+
+// localStorage prefix to avoid conflict if site uses locastorage as well
+var lsPrefix = "mangafox-upgrade-userscript-";
+var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
 
 
 /**************
@@ -148,6 +155,17 @@ function createMuMenu() {
 	$('body').append(menu);
 }
 
+// Sum a number 'toAdd' with an already existant number in the localStorage at key 'key'.
+function sumLSValue(key, toAdd) {
+	var valInLS = localStorage.getItem(key);
+	localStorage.setItem(key, toAdd + (valInLS === null ? 0 : valInLS));
+}
+
+// Increments a value in the localStorage at key 'key'.
+function incrLSValue(key) {
+	sumLSValue(key, 1);
+}
+
 // Swaps ACG and Bookmarks in the menu.
 function swapACG() {
 	var last = $('#menu li').last();
@@ -167,6 +185,8 @@ function loadBlankPage() {
 	if ($('body').is(':empty')) {
 		$.get(window.location.href, function (res) {
 			document.write(res);
+			
+			incrLSValue(numBlankPagesCorrectedKey);
 		});
 	}
 }
