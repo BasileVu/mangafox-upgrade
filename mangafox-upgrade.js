@@ -45,24 +45,18 @@ var css = `
 	background-repeat: no-repeat;
 	background-size: 25px 25px;
 	border: solid #717D8C 1px;
+	cursor: pointer;
+	text-align: center;
+	color: #717D8C;
+	font-weight: bolder;
+	font-family: Arial, sans-serif;
+	font-size: 15px;
+	line-height: 170%;
 }
 
 #mu-menu-deployer:hover {
 	border-color: #8AE305;
-	cursor: pointer;
-}
-
-#mu-menu-deployer:before {
-	position: absolute;
-	left: -1px;
-	top: -1px;
-	content: '';
-	border-top: 12px solid #717D8C;
-	border-right: 12px solid transparent;
-}
-
-#mu-menu-deployer:hover:before {
-	border-top-color: #8AE305;
+	color: #8AE305;
 }
 
 #mu-menu-content {
@@ -79,22 +73,44 @@ var css = `
 #mu-tabs-menu {
 	list-style: none;
 	margin-top: 2px;
+	height: 25px;
 }
 
 .mu-tab {
 	float: left;
 	width: 80px;
-	height: 25px;
 	background-color: #666666;
 	margin-left: 2px;
 	font-family: Arial, Helvetica, sans-serif;
 	color: white;
-	font-weight: bold;
 	line-height: 250%;
 	padding-left: 5px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	box-sizing: border-box;/
+	box-sizing: border-box;
+	cursor: pointer;
+}
+
+.mu-tab:hover {
+	text-decoration: underline;
+}
+
+.mu-tab-selected {
+	height: 32px;
+	font-weight: bold;
+}
+
+.mu-tab-content {
+	display: none;
+	margin-top: 7px;
+	margin-left: 2px;
+	width: 242px;
+	height: 262px;
+	border: solid #666666 1px;
+}
+
+.mu-tab-content-display {
+	display: block;
 }
 `;
 
@@ -159,15 +175,37 @@ function addCss(css, callback) {
 // Create the menu for Mangafox-Upgrade
 function createMuMenu() {
 	var menu = $('<div></div>').attr('id', "mu-menu");
-	var deployer = $('<div></div>').attr('id', "mu-menu-deployer");
+	var deployer = $('<div>+</div>').attr('id', "mu-menu-deployer");
 	var content = $('<div></div>').attr('id', "mu-menu-content");
-	var tabsMenu = $('<ul><li class="mu-tab">Design</li><li class="mu-tab">Bug Fixes</li><li class="mu-tab">Stats</li></ul>')
-	.attr('id', "mu-tabs-menu");
+	var tabsMenu = $('<ul></ul>').attr('id', "mu-tabs-menu");
+	var tabs = [
+		$('<li class="mu-tab">Design</li>'),
+		$('<li class="mu-tab">Bug Fixes</li>'),
+		$('<li class="mu-tab">Stats</li>') ];
+	var tabsContent = [
+		$('<div id="mu-design-tab" class="mu-tab-content">1</div>'),
+		$('<div id="mu-bug-tab" class="mu-tab-content">2</div>'),
+		$('<div id="mu-stat-tab" class="mu-tab-content">3</div>') ];
 
 	// The menu id hidden when loaded
 	menu.addClass('mu-menu-hide');
 
+	// Set the default tab selected
+	tabs[0].addClass('mu-tab-selected');
+	tabsContent[0].addClass('mu-tab-content-display');
+
 	/* Events */
+
+	$.each(tabs, function(index, value) {
+		value.click(function() {
+			$('.mu-tab').removeClass('mu-tab-selected');
+			$('.mu-tab-content').removeClass('mu-tab-content-display');
+
+			$(this).addClass('mu-tab-selected');
+			$('.mu-tab-content').eq(index).addClass('mu-tab-content-display');
+		});
+		tabsMenu.append(value);
+	});
 
 	// Show/hide menu when deployer is clicked
 	deployer.click(function() {
@@ -177,6 +215,9 @@ function createMuMenu() {
 	/* Creation */
 
 	content.append(tabsMenu);
+	$.each(tabsContent, function(index, value) {
+		content.append(value);
+	});
 	menu.append(deployer);
 	menu.append(content);
 	$('body').append(menu);
