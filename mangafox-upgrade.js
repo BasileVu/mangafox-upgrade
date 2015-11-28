@@ -340,6 +340,22 @@ function enlargeOnlyBigImages() {
 	});
 }
 
+// Preloads next image by putting it in the cache.
+function preloadNext() {
+	$.get($('.read_img a').attr('href'), function (nextPageHTML) {
+		var readImgDiv = '<div class="read_img">';
+		var imgPathBegin = '<img src="';
+		
+		var fromDiv = nextPageHTML.substr(nextPageHTML.indexOf(readImgDiv));
+		var imgPath = fromDiv.substr(fromDiv.indexOf(imgPathBegin) + imgPathBegin.length);
+		imgPath = imgPath.substr(0, imgPath.indexOf('"'));
+		
+		// since the cdn doesn't allow us to get img, we preload it by putting it directly hidden in body
+		$('body').append('<img id="mu-preload-img" src="' + imgPath + '">');
+		$('#mu-preload-img').hide();
+	});
+}
+
 
 
 /*********
