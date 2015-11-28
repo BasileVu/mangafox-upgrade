@@ -218,18 +218,26 @@ $(document).ready(function () {
 	
 	console.log("Mangafox upgrade successfully loaded.");
 	
-	// menu
+	// All
+	
+	if (getLSValue(options.bug.blankPage.value) != 0) {
+		loadBlankPage();
+	}
+	
+	// Menu
 	if (getLSValue(options.upgrade.leftBookmark.value) != 0) {
 		$(document).unbind("DOMSubtreeModified", swapACG);
 	}
 	
-	// reading
-	if (getLSValue(options.bug.blankPage.value) != 0) {
-		loadBlankPage();
-	}
-		
-	if (getLSValue(options.upgrade.autoEnlarge.value) != 0) {
-		enlargeOnlyBigImages();
+	// Reading
+
+	// Check if this is a chapter page
+	var chRegExp = /\/c\d+\/\d+.html$/i;
+	if (chRegExp.test(window.location.pathname)) {
+		console.log("ok");
+		if (getLSValue(options.upgrade.autoEnlarge.value) != 0) {
+			enlargeOnlyBigImages();
+		}
 	}
 });
 
