@@ -6,5 +6,6 @@
 // @author       Flagoul && Gerardufoin
 // @match        http://mangafox.me/*
 // @grant        none
+// @run-at       document-start
 // @require      file:///PATH_TO_MU
 // ==/UserScript==
