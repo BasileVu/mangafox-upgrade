@@ -22,6 +22,15 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 var css = `
 /* The following is the css for Mangafox-Upgrade */
 
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 #mu-menu {
 	position: fixed;
 	z-index: 999;
@@ -84,6 +93,7 @@ var css = `
 	font-family: Arial, Helvetica, sans-serif;
 	color: white;
 	line-height: 250%;
+	text-align: initial;
 	padding-left: 5px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -107,18 +117,89 @@ var css = `
 	width: 242px;
 	height: 262px;
 	border: solid #666666 1px;
+	text-align: initial;
 }
 
 .mu-tab-content-display {
 	display: block;
 }
+
+.mu-options {
+	margin-top: 7px;
+	margin-left: 3px;
+}
+
+.mu-options tr:not(:last-child) td {
+	padding-bottom: 5px;
+}
+
+.mu-option-checkbox {
+	line-height: 15px;
+	width: 15px;
+}
+
+.mu-option-checkbox div {
+	border: solid black 1px;
+	width: 15px;
+	height: 15px;
+	vertical-align: center;
+	cursor: pointer;
+}
+
+.mu-option-checkbox div.checked {
+	background-color: #ACFF1A;
+}
+
+.mu-option-description {
+	padding-left: 3px;
+	font-family: Arial, sans-serif;
+	line-height: 13px;
+}
 `;
+
+
+
+/*****************
+** LocalStorage **
+******************/
+
+// localStorage prefix to avoid conflict if site uses locastorage as well
+var lsPrefix = "mangafox-upgrade-userscript-";
+var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
+var showMenu = lsPrefix + "show-menu";
+
+var options = {
+	design: {
+		leftBookmark: {
+			description: "Move bookmarks tab to the right.",
+			value: lsPrefix + "left-bookmark"
+		},
+		autoEnlarge: {
+			description: "Enlarge big images automatically.",
+			value: lsPrefix + "auto-enlarge"
+		}
+	},
+	bug: {
+		blankPage: {
+			description: "Load mangafox blank pages.",
+			value: lsPrefix + "blank-page"
+		},
+		nextPage: {
+			description: "Re-enable next page change on big images.",
+			value: lsPrefix + "left-page"
+		}
+	}
+};
+
+
 
 /*********
 ** Load **
 *********/
 
-$(document).bind("DOMSubtreeModified", swapACG);
+if (getLSValue(options.design.leftBookmark.value) != 0) {
+	$(document).bind("DOMSubtreeModified", swapACG);
+}
 
 
 $(document).ready(function () {
@@ -126,12 +207,19 @@ $(document).ready(function () {
 	console.log("Mangafox upgrade successfully loaded.");
 	
 	// menu
-	$(document).unbind("DOMSubtreeModified", swapACG);
+	if (getLSValue(options.design.leftBookmark.value) != 0) {
+		$(document).unbind("DOMSubtreeModified", swapACG);
+	}
 	
 	// reading
-	loadBlankPage();
-	enlargeOnlyBigImages();
+	if (getLSValue(options.bug.blankPage.value) != 0) {
+		loadBlankPage();
+	}
+	if (getLSValue(options.design.autoEnlarge.value) != 0) {
+		enlargeOnlyBigImages();
+	}
 });
+
 
 // Do not wait for the whole document to be ready
 $('head').ready(function () {
@@ -139,14 +227,6 @@ $('head').ready(function () {
 	addCss(css, createMuMenu);
 });
 
-
-/***************
-**LocalStorage**
-****************/
-
-// localStorage prefix to avoid conflict if site uses locastorage as well
-var lsPrefix = "mangafox-upgrade-userscript-";
-var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
 
 
 /**************
@@ -172,60 +252,10 @@ function addCss(css, callback) {
 	callback();
 }
 
-// Create the menu for Mangafox-Upgrade
-function createMuMenu() {
-	var menu = $('<div></div>').attr('id', "mu-menu");
-	var deployer = $('<div>+</div>').attr('id', "mu-menu-deployer");
-	var content = $('<div></div>').attr('id', "mu-menu-content");
-	var tabsMenu = $('<ul></ul>').attr('id', "mu-tabs-menu");
-	var tabs = [
-		$('<li class="mu-tab">Design</li>'),
-		$('<li class="mu-tab">Bug Fixes</li>'),
-		$('<li class="mu-tab">Stats</li>') ];
-	var tabsContent = [
-		$('<div id="mu-design-tab" class="mu-tab-content">1</div>'),
-		$('<div id="mu-bug-tab" class="mu-tab-content">2</div>'),
-		$('<div id="mu-stat-tab" class="mu-tab-content">3</div>') ];
-
-	// The menu id hidden when loaded
-	menu.addClass('mu-menu-hide');
-
-	// Set the default tab selected
-	tabs[0].addClass('mu-tab-selected');
-	tabsContent[0].addClass('mu-tab-content-display');
-
-	/* Events */
-
-	$.each(tabs, function(index, value) {
-		value.click(function() {
-			$('.mu-tab').removeClass('mu-tab-selected');
-			$('.mu-tab-content').removeClass('mu-tab-content-display');
-
-			$(this).addClass('mu-tab-selected');
-			$('.mu-tab-content').eq(index).addClass('mu-tab-content-display');
-		});
-		tabsMenu.append(value);
-	});
-
-	// Show/hide menu when deployer is clicked
-	deployer.click(function() {
-		$(this).parent().toggleClass('mu-menu-hide');
-		if ($(this).parent().hasClass('mu-menu-hide')) {
-			$(this).text('+');
-		} else {
-			$(this).text('-');
-		}
-	});
-
-	/* Creation */
-
-	content.append(tabsMenu);
-	$.each(tabsContent, function(index, value) {
-		content.append(value);
-	});
-	menu.append(deployer);
-	menu.append(content);
-	$('body').append(menu);
+// Return the value of the localstorage at key 'key'.
+function getLSValue(key) {
+	var val = localStorage.getItem(key);
+	return (val === null ? 0 : val);
 }
 
 // Sum a number 'toAdd' with an already existant number in the localStorage at key 'key'.
@@ -237,6 +267,12 @@ function sumLSValue(key, toAdd) {
 // Increments a value in the localStorage at key 'key'.
 function incrLSValue(key) {
 	sumLSValue(key, 1);
+}
+
+// Toggle the value in the localStorage at key 'key'.
+function toggleLSValue(key) {
+	var val = localStorage.getItem(key);
+	localStorage.setItem(key, (val == 0 || val === null ? 1 : 0));
 }
 
 // Swaps ACG and Bookmarks in the menu.
@@ -280,6 +316,98 @@ function enlargeOnlyBigImages() {
 function enlargeImage() {
 	$('#viewer').css('width', '98vw');
 	$('.read_img img').css('width', '97vw');
+}
+
+
+// Create the menu for Mangafox-Upgrade
+function createMuMenu() {
+	var menu = $('<div></div>').attr('id', "mu-menu");
+	var deployer = $('<div>+</div>').attr('id', "mu-menu-deployer");
+	var content = $('<div></div>').attr('id', "mu-menu-content");
+	var tabsMenu = $('<ul></ul>').attr('id', "mu-tabs-menu");
+	var tabs = [
+		$('<li class="mu-tab">Design</li>'),
+		$('<li class="mu-tab">Bug Fixes</li>'),
+		$('<li class="mu-tab">Stats</li>') ];
+	var tabsContent = [
+		$('<div id="mu-design-tab" class="mu-tab-content"></div>'),
+		$('<div id="mu-bug-tab" class="mu-tab-content"></div>'),
+		$('<div id="mu-stat-tab" class="mu-tab-content"></div>') ];
+
+	// Hides the menu depending on last access
+	if (getLSValue(showMenu) == 0) {
+		menu.addClass('mu-menu-hide');
+	}
+
+	// Set the default tab selected
+	tabs[0].addClass('mu-tab-selected');
+	tabsContent[0].addClass('mu-tab-content-display');
+
+	/* Events */
+
+	$.each(tabs, function(index, value) {
+		value.click(function(e) {
+			$('.mu-tab').removeClass('mu-tab-selected');
+			$('.mu-tab-content').removeClass('mu-tab-content-display');
+
+			$(this).addClass('mu-tab-selected');
+			$('.mu-tab-content').eq(index).addClass('mu-tab-content-display');
+		});
+		tabsMenu.append(value);
+	});
+
+	// Show/hide menu when deployer is clicked
+	deployer.click(function() {
+		$(this).parent().toggleClass('mu-menu-hide');
+		toggleLSValue(showMenu);
+		if ($(this).parent().hasClass('mu-menu-hide')) {
+			$(this).text('+');
+		} else {
+			$(this).text('-');
+		}
+	});
+
+	/* Creation */
+
+	optionsTab(tabsContent[0], 'design');
+	optionsTab(tabsContent[1], 'bug');
+
+	content.append(tabsMenu);
+	$.each(tabsContent, function(index, value) {
+		content.append(value);
+	});
+	menu.append(deployer);
+	menu.append(content);
+	$('body').append(menu);
+}
+
+// Create an options tab. Take the tab Object and the name of the index in the options variable
+function optionsTab(tab, name) {
+	var op = $('<table></table>').addClass("mu-options");
+	var content = $('<tbody></tbody>');
+
+	$.each(options[name], function(index, value) {
+		var newOption = $('<tr></tr>');
+		var checkBoxCell = $('<td></td>').addClass('mu-option-checkbox').addClass('noselect');
+		var checkBox = $('<div></div>');
+		var desc = $('<td>' + value.description + '</td>').addClass('mu-option-description');
+
+		if (getLSValue(value.value) != 0) {
+			checkBox.addClass('checked');
+		}
+
+		checkBox.click(function() {
+			$(this).toggleClass('checked');
+			toggleLSValue(value.value);
+		});
+
+		checkBoxCell.append(checkBox);
+		newOption.append(checkBoxCell).append(desc);
+		content.append(newOption);
+	});
+
+	op.append(content);
+	tab.append(op);
 }
 
 } // end [if not in frame]
