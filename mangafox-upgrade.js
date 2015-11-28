@@ -115,7 +115,7 @@ var css = `
 	margin-top: 7px;
 	margin-left: 2px;
 	width: 242px;
-	height: 262px;
+	height: 248px;
 	border: solid #666666 1px;
 	text-align: initial;
 }
@@ -147,13 +147,23 @@ var css = `
 }
 
 .mu-option-checkbox div.checked {
-	background-color: #ACFF1A;
+	background-color: #ABBD00;
 }
 
 .mu-option-description {
 	padding-left: 3px;
 	font-family: Arial, sans-serif;
 	line-height: 13px;
+}
+
+#mu-menu-credits {
+	text-align: center;
+	font-size: 0.8em;
+	line-height: 1.7em;
+}
+
+#mu-menu-credits a {
+	font-size: 1em !important;
 }
 `;
 
@@ -175,7 +185,7 @@ var options = {
 			value: lsPrefix + "left-bookmark"
 		},
 		autoEnlarge: {
-			description: "Enlarge big images automatically.",
+			description: "Automatically enlarge big images.",
 			value: lsPrefix + "auto-enlarge"
 		}
 	},
@@ -331,6 +341,11 @@ function enlargeOnlyBigImages() {
 }
 
 
+
+/*********
+** Menu **
+*********/
+
 // Create the menu for Mangafox-Upgrade
 function createMuMenu() {
 	var menu = $('<div></div>').attr('id', "mu-menu");
@@ -345,6 +360,7 @@ function createMuMenu() {
 		$('<div id="mu-design-tab" class="mu-tab-content"></div>'),
 		$('<div id="mu-bug-tab" class="mu-tab-content"></div>'),
 		$('<div id="mu-stat-tab" class="mu-tab-content"></div>') ];
+	var credit = $('<p id="mu-menu-credits"><a href="https://github.com/Flagoul/mangafox-upgrade" target="_blank">Mangafox-Upgrade</a> @ 2015</p>');
 
 	// Hides the menu depending on last access
 	if (getLSValue(showMenu) == 0) {
@@ -388,6 +404,7 @@ function createMuMenu() {
 	$.each(tabsContent, function(index, value) {
 		content.append(value);
 	});
+	content.append(credit);
 	menu.append(deployer);
 	menu.append(content);
 	$('body').append(menu);
