@@ -106,7 +106,7 @@ $('head').ready(function () {
 
 // localStorage prefix to avoid conflict if site uses locastorage as well
 var lsPrefix = "mangafox-upgrade-userscript-";
-var numBlankPagesCorrectedKey = "num-blankpages-corrected";
+var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
 
 
 /**************
@@ -186,7 +186,7 @@ function loadBlankPage() {
 		$.get(window.location.href, function (res) {
 			document.write(res);
 			
-			incrLSValue(lsPrefix + numBlankPagesCorrectedKey);
+			incrLSValue(numBlankPagesCorrectedKey);
 		});
 	}
 }
