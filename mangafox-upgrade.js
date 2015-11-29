@@ -235,7 +235,7 @@ $(document).ready(function () {
 				$('.read_img a').attr('onclick', '');
 			});
 		}
-		
+
 	}
 });
 
@@ -364,14 +364,15 @@ function preloadNext() {
 	var pageList = $('.l').first();
 	var dropDown = pageList.children()[0];
 	var currentPage = dropDown.options[dropDown.selectedIndex].text;
-	var totalPages = pageList.text().match(/of ([0-9]+)/)[1];
+	var totalPages = pageList.text().match(/of (\d+)/i)[1];
 	
 	// chapter
 	var chapterList = $('#top_chapter_list')[0];
 	var curChapter = chapterList.options[chapterList.selectedIndex + 1].value;
 	
 	// next page href
-	var mangaPath = document.location.href.match(/(.+\/)v[0-9]+\/c[0-9]+\/[0-9]+\.html/)[1];
+	var mangaPath = document.location.href.match(/^(http:\/\/mangafox\.me\/manga\/\w+\/)/i)[1];
+	console.log(mangaPath);
 	var nextChaptFirstHref = mangaPath + curChapter + "/1.html";
 	var nextPageHref = (currentPage != totalPages ? $('.read_img a').attr('href') : nextChaptFirstHref);
 	
