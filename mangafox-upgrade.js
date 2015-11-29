@@ -226,19 +226,16 @@ $(document).ready(function () {
 
 	// Check if this is a chapter page
 	if (isChapterUrl()) {
-		console.log("ok");
-		
+
 		if (getLSValue(options.upgrade.autoEnlarge.value) != 0) {
 			enlargeOnlyBigImages();			
-		} else {
-			
+		} else if (getLSValue(options.bug.nextPage.value) != 0) {
 			// keep native enlarge but remove it after one click (after big images are enlarged)
-			if (getLSValue(options.bug.nextPage.value) != 0) {
-				$('.read_img').click(function () {
-					$('.read_img a').attr('onclick', '');
-				});
-			}
+			$('.read_img').click(function () {
+				$('.read_img a').attr('onclick', '');
+			});
 		}
+		
 	}
 });
 
