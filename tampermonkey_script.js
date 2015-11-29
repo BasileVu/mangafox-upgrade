@@ -7,5 +7,6 @@
 // @match        http://mangafox.me/*
 // @grant        none
 // @run-at       document-start
+// @require      https://code.jquery.com/jquery-2.1.4.min.js
 // @require      file:///PATH_TO_MU
 // ==/UserScript==
