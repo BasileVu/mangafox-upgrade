@@ -368,12 +368,20 @@ function preloadNext() {
 	
 	// chapter
 	var chapterList = $('#top_chapter_list')[0];
-	var curChapter = chapterList.options[chapterList.selectedIndex + 1].value;
+	var nextChapter = "";
+	// We check that there is a next chapter available
+	if (chapterList.selectedIndex + 1 < chapterList.options.length) {
+		nextChapter = chapterList.options[chapterList.selectedIndex + 1].value;
+	}
+
+	// If this is the last page and there is no next chapter, we exit the function
+	if (nextChapter === "" && currentPage == totalPages) {
+		return;
+	}
 	
 	// next page href
 	var mangaPath = document.location.href.match(/^(http:\/\/mangafox\.me\/manga\/\w+\/)/i)[1];
-	console.log(mangaPath);
-	var nextChaptFirstHref = mangaPath + curChapter + "/1.html";
+	var nextChaptFirstHref = mangaPath + nextChapter + "/1.html";
 	var nextPageHref = (currentPage != totalPages ? $('.read_img a').attr('href') : nextChaptFirstHref);
 	
 	// load next image
