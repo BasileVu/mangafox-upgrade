@@ -12,4 +12,4 @@ Every feature can be enabled or disabled from the option menu on the upper right
 Tested with tampermonkey 3.12 on Google chrome 46.0.2490.86 m.
 
 ### Installation
-Create a new script with tampermonkey, copy-paste the content of tampermonkey_script.js then edit field @require to the mangafox-upgrade.js file location.
+Create a new script with tampermonkey and copy past the content of mangafox_upgrade.js.
