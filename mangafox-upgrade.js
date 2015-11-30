@@ -252,6 +252,7 @@ $(document).ready(function () {
 	// Check if this is a chapter page
 	if (isChapterUrl()) {
 
+		// enlarge big images and big images fix
 		if (getLSValue(options.upgrade.autoEnlarge.value) != 0) {
 			enlargeOnlyBigImages();			
 		} else if (getLSValue(options.bug.nextPage.value) != 0) {
@@ -260,7 +261,9 @@ $(document).ready(function () {
 				$('.read_img a').attr('onclick', '');
 			});
 		}
-
+		
+		// store this page in the json relative to the manga
+		
 	}
 });
 
@@ -306,6 +309,31 @@ function addCss(css, callback) {
 function isChapterUrl() {
 	var chRegExp = /\/c\d+\/\d+.html$/i;
 	return chRegExp.test(window.location.pathname);
+}
+
+/** 
+* Gets the different infos from url.
+* Returns :
+* - null if not a chapter url
+* - the current url, name of the manga, volume number, chapter number and page number otherwise.
+*   The volume number is 'null' if the manga does not have volumes.
+*/
+function tokenizeUrl() {
+	if (!isChapterUrl()) {
+		return null;
+	}
+	
+	var curPageUrl = window.location.href;
+	var values = curPageUrl.match(/http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\d+))?\/c(\d+)\/([0-9]+).html/);
+	
+	var tokens = {};
+	tokens.fullUrl = curPageUrl;
+	tokens.mangaName = values[1];
+	tokens.volumeNumber = values[2] === undefined ? null : parseInt(values[2]);
+	tokens.chapterNumber = parseInt(values[3]);
+	tokens.pageNumber = parseInt(values[4]);
+	
+	return tokens;
 }
 
 // Check if the user just went to a manga chapter
