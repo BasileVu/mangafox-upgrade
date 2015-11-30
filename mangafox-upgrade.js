@@ -177,7 +177,8 @@ var css = `
 // localStorage prefix to avoid conflict if site uses locastorage as well
 var lsPrefix = "mangafox-upgrade-userscript-";
 var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
-var showMenu = lsPrefix + "show-menu";
+var showMenuKey = lsPrefix + "show-menu";
+var lastPagesVisitedKey = lsPrefix + "last-pages-visited"
 
 var options = {
 	upgrade: {
@@ -263,7 +264,7 @@ $(document).ready(function () {
 		}
 		
 		// store this page in the json relative to the manga
-		
+		storeCurrentPageUrl();
 	}
 });
 
@@ -305,6 +306,27 @@ function addCss(css, callback) {
 	callback();
 }
 
+// Stores in the localStorage the url of the current page accordingly to the manga name.
+function storeCurrentPageUrl() {
+	var tokens = tokenizeUrl();
+	
+	if (tokens === null){
+		return;
+	}
+	
+	// add current page url to localStorage
+	
+	var lastPagesVisited = localStorage.getItem(lastPagesVisitedKey);
+	if (lastPagesVisited === null) {
+		lastPagesVisited = {};
+	} else {
+		lastPagesVisited = JSON.parse(lastPagesVisited);
+	}
+	
+	lastPagesVisited[tokens.mangaName] = tokens.url;
+	localStorage.setItem(lastPagesVisitedKey, JSON.stringify(lastPagesVisited));
+}
+
 // Check if webpage is a chapter's page
 function isChapterUrl() {
 	var chRegExp = /\/c\d+\/\d+.html$/i;
@@ -324,10 +346,10 @@ function tokenizeUrl() {
 	}
 	
 	var curPageUrl = window.location.href;
-	var values = curPageUrl.match(/http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\d+))?\/c(\d+)\/([0-9]+).html/);
+	var values = curPageUrl.match(/^http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\d+))?\/c(\d+)\/([0-9]+).html$/);
 	
 	var tokens = {};
-	tokens.fullUrl = curPageUrl;
+	tokens.url = curPageUrl;
 	tokens.mangaName = values[1];
 	tokens.volumeNumber = values[2] === undefined ? null : parseInt(values[2]);
 	tokens.chapterNumber = parseInt(values[3]);
@@ -542,7 +564,7 @@ function createMuMenu() {
 	var credit = $('<p id="mu-menu-credits"><a href="https://github.com/Flagoul/mangafox-upgrade" target="_blank">Mangafox-Upgrade</a> @ 2015</p>');
 
 	// Hides the menu depending on last access
-	if (getLSValue(showMenu) == 0) {
+	if (getLSValue(showMenuKey) == 0) {
 		menu.addClass('mu-menu-hide');
 		deployer.text('+');
 	}
@@ -567,7 +589,7 @@ function createMuMenu() {
 	// Show/hide menu when deployer is clicked
 	deployer.click(function() {
 		$(this).parent().toggleClass('mu-menu-hide');
-		toggleLSValue(showMenu);
+		toggleLSValue(showMenuKey);
 		if ($(this).parent().hasClass('mu-menu-hide')) {
 			$(this).text('+');
 		} else {
