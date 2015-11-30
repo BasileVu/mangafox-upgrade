@@ -516,7 +516,7 @@ function createMuMenu() {
 	// Hides the menu depending on last access
 	if (getLSValue(showMenu) == 0) {
 		menu.addClass('mu-menu-hide');
-		menu.text('+');
+		deployer.text('+');
 	}
 
 	// Set the default tab selected
