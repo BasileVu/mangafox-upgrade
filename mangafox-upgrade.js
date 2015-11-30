@@ -128,7 +128,7 @@ var css = `
 }
 
 .mu-option-checkbox div {
-	border: solid black 1px;
+	border: solid #777777 1px;
 	width: 15px;
 	height: 15px;
 	vertical-align: center;
@@ -137,6 +137,14 @@ var css = `
 
 .mu-option-checkbox div.checked {
 	background-color: #ABBD00;
+}
+
+.mu-option-checkbox div:hover {
+	border-style: outset;
+}
+
+.mu-option-checkbox div:active {
+	border-style: inset;
 }
 
 .mu-option-description {
