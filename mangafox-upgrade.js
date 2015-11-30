@@ -154,6 +154,10 @@ var css = `
 #mu-menu-credits a {
 	font-size: 1em !important;
 }
+
+.mu-update-color {
+	background-color: #DAF0D3 !important;
+}
 `;
 
 
@@ -180,6 +184,10 @@ var options = {
 		preloadNext: {
 			description: "Preload next image.",
 			value: lsPrefix + "preload-next"
+		},
+		highlightUpdate: {
+			description: "Highlight unvisited updates.",
+			value: lsPrefix + "hightlight-update"
 		}
 	},
 	bug: {
@@ -222,6 +230,15 @@ $(document).ready(function () {
 		$(document).unbind("DOMSubtreeModified", swapACG);
 	}
 	
+	// Bookmarks
+	if (getLSValue(options.upgrade.highlightUpdate.value) != 0) {
+		// This is here because mangafox do not update the visit unless you go to the manga's main page.
+		if (loadManga()) {
+			updateVisit();
+		}
+		highlightUpdate();
+	}
+
 	// Reading
 
 	// Check if this is a chapter page
@@ -281,6 +298,30 @@ function addCss(css, callback) {
 function isChapterUrl() {
 	var chRegExp = /\/c\d+\/\d+.html$/i;
 	return chRegExp.test(window.location.pathname);
+}
+
+// Check if the user just went to a manga chapter
+function loadManga() {
+	// If there is no referrer it is probably a refresh
+	if (document.referrer == "") {
+		return false;
+	}
+
+	// We check that the current webpage is a chapter page and check if the previous page
+	// was from the same chapter/manga
+	var curRegExp = /\/manga\/(\w+)\/.*\.html/i;
+	var prevRegExp = /\/manga\/(\w+)/i;
+	var current = curRegExp.exec(window.location.pathname);
+	var previous = prevRegExp.exec(document.referrer);
+
+	// If the current page is a chapter page and the previous page isn't or is not about
+	// the same manga, we return true
+	return (current !== null && (previous === null || current[1] !== previous[1]));
+}
+
+function updateVisit() {
+	// We get the path up to the manga name then ask for this page so mangafox update our visit
+	$.get(window.location.pathname.split('/').slice(0, 3).join('/'));
 }
 
 // Return the value of the localstorage at key 'key'.
@@ -394,7 +435,55 @@ function preloadNext() {
 	});
 }
 
+// Hightlight bookmarks if last visit is older than last update
+function highlightUpdate() {
+	var bookmarks = $('ul#bmlist li div.series_grp');
 
+	// If there is no bookmarks, we exit the function
+	if (!bookmarks.length) {
+		return ;
+	}
+
+	bookmarks.each(function() {
+		var lastUpdateRaw = $(this).find('dl dt em span.timing');
+		var lastVisitRaw = $(this).find('h2 em span.timing');
+
+		// If one of the information is missing, we skip this bookmark
+		if (!lastUpdateRaw.length || !lastVisitRaw.length) {
+			return ;
+		}
+
+		var lastUpdate = convertToTime(lastUpdateRaw.text());
+		var lastVisit = convertToTime(lastVisitRaw.text());
+
+		if (lastUpdate > lastVisit) {
+			$(this).addClass('mu-update-color');
+		}
+	});
+}
+
+// Convert mangafox bookmarks date to time
+function convertToTime(date)
+{
+	var regExpDate = /(Today|Yesterday|(\w+)\s(\d+),\s(\d+))\s(\d+):(\d+)(am|pm)/i;
+	var time = regExpDate.exec(date);
+
+	var result;
+	if (time[1] == 'Today' || time[1] == 'Yesterday') {
+		result = new Date();
+		if (time[1] == 'Yesterday') {
+			result.setDate(result.getDate() - 1);
+		}
+	} else {
+		result = new Date(time[2] + ' ' + time[3] + ', ' + time[4]);
+	}
+	var diff = (time[7] == 'am' ? 0 : 12);
+	result.setHours(parseInt(time[5]) + diff);
+	result.setMinutes(parseInt(time[6]));
+	result.setSeconds(0);
+
+	return result;
+}
 
 /*********
 ** Menu **
