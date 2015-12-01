@@ -235,6 +235,8 @@ $(document).ready(function () {
 	}
 	
 	// Menu
+	addCss(css, createMuMenu);
+	
 	if (getLSValue(options.upgrade.leftBookmark.value) != 0) {
 		$(document).unbind("DOMSubtreeModified", swapACG);
 	}
@@ -264,7 +266,7 @@ $(document).ready(function () {
 		}
 		
 		// store this page in the json relative to the manga
-		storeCurrentPageUrl();
+		storeCurrentPageInfos();
 	}
 });
 
@@ -274,13 +276,6 @@ $(window).load(function () {
 		preloadNext();
 	}
 });
-
-// Do not wait for the whole document to be ready
-$('head').ready(function () {
-	// Once the css is loaded, we can safely add MuMenu
-	addCss(css, createMuMenu);
-});
-
 
 
 /**************
@@ -307,7 +302,7 @@ function addCss(css, callback) {
 }
 
 // Stores in the localStorage the url of the current page accordingly to the manga name.
-function storeCurrentPageUrl() {
+function storeCurrentPageInfos() {
 	var tokens = tokenizeUrl();
 	
 	if (tokens === null){
@@ -323,7 +318,7 @@ function storeCurrentPageUrl() {
 		lastPagesVisited = JSON.parse(lastPagesVisited);
 	}
 	
-	lastPagesVisited[tokens.mangaName] = tokens.url;
+	lastPagesVisited[tokens.mangaName] = tokens;
 	localStorage.setItem(lastPagesVisitedKey, JSON.stringify(lastPagesVisited));
 }
 
@@ -346,14 +341,13 @@ function tokenizeUrl() {
 	}
 	
 	var curPageUrl = window.location.href;
-	var values = curPageUrl.match(/^http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\d+))?\/c(\d+)\/([0-9]+).html$/);
+	var values = curPageUrl.match(/^http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\w+))?\/c(\w+)\/([0-9]+).html$/);
 	
 	var tokens = {};
-	tokens.url = curPageUrl;
 	tokens.mangaName = values[1];
-	tokens.volumeNumber = values[2] === undefined ? null : parseInt(values[2]);
-	tokens.chapterNumber = parseInt(values[3]);
-	tokens.pageNumber = parseInt(values[4]);
+	tokens.volumeNumber = values[2] === undefined ? null : values[2];
+	tokens.chapterNumber = values[3];
+	tokens.pageNumber = values[4];
 	
 	return tokens;
 }
