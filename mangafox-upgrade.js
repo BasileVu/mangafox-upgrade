@@ -166,6 +166,11 @@ var css = `
 .mu-update-color {
 	background-color: #DAF0D3 !important;
 }
+
+#mu-last-pages-visited > img {
+	width: 10px;
+}
+
 `;
 
 
@@ -249,6 +254,10 @@ $(document).ready(function () {
 		}
 		highlightUpdate();
 	}
+	
+	if (isBookmarkUrl()) {
+		lastPagesInBookmark();
+	}
 
 	// Reading
 
@@ -301,6 +310,58 @@ function addCss(css, callback) {
 	callback();
 }
 
+
+/**
+* Loads the object representing the last pages visited stored in the localStorage.
+* Returns the object at the last page visited key, else an empty object.
+*/
+function loadLPVFromLS() {
+	var lpv = localStorage.getItem(lastPagesVisitedKey);
+	if (lpv === null) {
+		lpv = {};
+	} else {
+		lpv = JSON.parse(lpv);
+	}
+	return lpv;
+}
+
+// Displays the last page visited for each manga in the bookmarks.
+function lastPagesInBookmark() {
+	
+	var lpv = loadLPVFromLS();
+	
+	$('.series_grp .title .noexpand').each(function () {
+		var mangaUrl = $(this).next().attr('href');
+		var mangaName = mangaUrl.match(/^http:\/\/mangafox\.me\/manga\/(.+)\/$/)[1];
+		
+		// default values
+		var text = "Not read yet";
+		var urlLPV = mangaUrl;
+		
+		// manga found in localStorage
+		var lpvForManga = lpv[mangaName];
+		if (lpvForManga !== undefined) {
+			
+			var prefix = "http://mangafox.me/manga";
+			var volume = lpvForManga.volumeNumber !== null ? "v" + lpvForManga.volumeNumber : "";
+			var chapter = "c" + lpvForManga.chapterNumber;
+			var page = lpvForManga.pageNumber + ".html";
+			
+			text = (volume !== "" ? volume + " " : "") + chapter + " page " + lpvForManga.pageNumber;
+			urlLPV = prefix + "/" + mangaName + "/" + volume + "/" + chapter + "/" + page;
+		}
+		
+		var muLPV = $('<span></span>')
+					.attr('id', 'mu-last-pages-visited')
+					.append($('<img src="http://mangafox.me/favicon.ico">'))
+					.click(function () {
+						console.log(mangaName + " : " + text + " -> " + urlLPV);
+					});
+					
+		$(this).after(muLPV);
+	});
+}
+
 // Stores in the localStorage the url of the current page accordingly to the manga name.
 function storeCurrentPageInfos() {
 	var tokens = tokenizeUrl();
@@ -310,19 +371,17 @@ function storeCurrentPageInfos() {
 	}
 	
 	// add current page url to localStorage
-	
-	var lastPagesVisited = localStorage.getItem(lastPagesVisitedKey);
-	if (lastPagesVisited === null) {
-		lastPagesVisited = {};
-	} else {
-		lastPagesVisited = JSON.parse(lastPagesVisited);
-	}
-	
+	var lastPagesVisited = loadLPVFromLS();
 	lastPagesVisited[tokens.mangaName] = tokens;
 	localStorage.setItem(lastPagesVisitedKey, JSON.stringify(lastPagesVisited));
 }
 
-// Check if webpage is a chapter's page
+// Checks if webpage is a bookmark page
+function isBookmarkUrl() {
+	return window.location.href.match(/^http:\/\/mangafox\.me\/bookmark\//) !== null;
+}
+
+// Checks if webpage is a chapter's page
 function isChapterUrl() {
 	var chRegExp = /\/c\d+\/\d+.html$/i;
 	return chRegExp.test(window.location.pathname);
