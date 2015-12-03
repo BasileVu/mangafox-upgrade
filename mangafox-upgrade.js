@@ -471,7 +471,7 @@ function isBookmarkUrl() {
 
 // Checks if webpage is a chapter's page
 function isChapterUrl() {
-	var chRegExp = /\/c\d+\/\d+.html$/i;
+	var chRegExp = /\/c[^\/]+\/\d+.html$/i;
 	return chRegExp.test(window.location.pathname);
 }
 
@@ -488,7 +488,7 @@ function tokenizeUrl() {
 	}
 	
 	var curPageUrl = window.location.href;
-	var values = curPageUrl.match(/^http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\w+))?\/c(\w+)\/([0-9]+).html$/);
+	var values = curPageUrl.match(/^http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\w+))?\/c([^\/]+)\/([0-9]+).html$/);
 	
 	var tokens = {};
 	tokens.mangaName = values[1];
