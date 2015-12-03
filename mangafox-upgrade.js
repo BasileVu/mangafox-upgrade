@@ -169,11 +169,27 @@ var css = `
 
 #mu-last-pages-visited > img {
 	width: 10px;
+	cursor: pointer;
 }
 
 .mu-greyed {
 	opacity: 0.4;
     filter: alpha(opacity=40);
+	cursor: default !important;
+}
+
+#mu-bookmark-page-button {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	background-color: white;
+	
+	font-size: 10px;
+	
+	border: 1px solid grey;
+	border-radius: 3px;
+	
+	cursor: pointer;
 }
 
 `;
@@ -279,8 +295,9 @@ $(document).ready(function () {
 			});
 		}
 		
-		// store this page in the json relative to the manga
-		storeCurrentPageInfos();
+		// store this page in the localStorage according to the manga name
+		// storeCurrentPageInfos();
+		addBookmarkButton();
 	}
 });
 
@@ -315,6 +332,42 @@ function addCss(css, callback) {
 	callback();
 }
 
+// Adds the button bookmark on reading pages.
+function addBookmarkButton() {
+	var button = $('<div></div>')
+				.attr('id', 'mu-bookmark-page-button')
+				.attr('title', 'Save this page as last page visited for this manga')
+				.text('Bookmark');
+	
+	// action for button
+	button.click(function () {
+		var curPage = tokenizeUrl();
+		var lpv = loadLPVFromLS();
+
+		// if bookmarked
+		if (JSON.stringify(curPage) === JSON.stringify(lpv[curPage.mangaName])) {
+			delete lpv[curPage.mangaName];
+			$(this).text('Bookmark');
+		} else {
+			lpv[curPage.mangaName] = curPage;
+			$(this).text('Bookmarked');
+		}
+		localStorage.setItem(lastPagesVisitedKey, JSON.stringify(lpv));
+	});
+				 
+	if (isPageLPV()) {
+		button.text('Bookmarked');
+	}
+	
+	$('body').append(button);
+}
+
+// Determines if the current page is the last page visited stored.
+function isPageLPV() {
+	var curPage = tokenizeUrl();
+	var lpv = loadLPVFromLS();
+	return JSON.stringify(curPage) === JSON.stringify(lpv[curPage.mangaName]);
+}
 
 /**
 * Loads the object representing the last pages visited stored in the localStorage.
@@ -347,14 +400,16 @@ function lastPagesInBookmark() {
 		var urlLPV = mangaUrl;
 		
 		// manga found in localStorage
-		var lpvForManga = lpv[mangaName];
-		if (lpvForManga !== undefined) {
+		if (lpv[mangaName] !== undefined) {
+			
+			var lpvForManga = lpv[mangaName];
 			
 			var prefix = "http://mangafox.me/manga";
 			var volume = lpvForManga.volumeNumber !== null ? "v" + lpvForManga.volumeNumber : "";
 			var chapter = "c" + lpvForManga.chapterNumber;
 			var page = lpvForManga.pageNumber + ".html";
 			
+			// change hover text and allows to go to lpv by clicking on image
 			text = (volume !== "" ? volume + " " : "") + chapter + " page " + lpvForManga.pageNumber;
 			urlLPV = prefix + "/" + mangaName + "/" + volume + "/" + chapter + "/" + page;
 			
@@ -362,10 +417,11 @@ function lastPagesInBookmark() {
 				window.location.href = urlLPV;
 			});
 			
-		} else {
+		} else { // else button greyed out
 			lpvImg.addClass('mu-greyed');
 		}
 		
+		// The 'button' (image) to click to go to last page visited
 		var muLPV = $('<span></span>')
 					.attr('id', 'mu-last-pages-visited')
 					.attr('title', 'Last page visited : ' + text)
