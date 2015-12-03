@@ -223,6 +223,14 @@ var options = {
 		highlightUpdate: {
 			description: "Highlight unvisited updates.",
 			value: lsPrefix + "hightlight-update"
+		},
+		lpvSaved: {
+			description: "Save last pages visited (seen in bookmarks).",
+			value: lsPrefix + "lpv-saved"
+		},
+		lpvSavedManual: {
+			description: "Save last pages visited manually.",
+			value: lsPrefix + "lpv-saved-manual"
 		}
 	},
 	bug: {
@@ -267,7 +275,9 @@ $(document).ready(function () {
 		$(document).unbind("DOMSubtreeModified", swapACG);
 	}
 	
+	
 	// Bookmarks
+	
 	if (getLSValue(options.upgrade.highlightUpdate.value) != 0) {
 		// This is here because mangafox do not update the visit unless you go to the manga's main page.
 		if (loadManga()) {
@@ -276,10 +286,14 @@ $(document).ready(function () {
 		highlightUpdate();
 	}
 	
+	// last pages visited button
 	if (isBookmarkUrl()) {
-		lastPagesInBookmark();
+		if (getLSValue(options.upgrade.lpvSaved.value) != 0) {
+			lastPagesInBookmark();
+		}
 	}
 
+	
 	// Reading
 
 	// Check if this is a chapter page
@@ -296,8 +310,13 @@ $(document).ready(function () {
 		}
 		
 		// store this page in the localStorage according to the manga name
-		// storeCurrentPageInfos();
-		addBookmarkButton();
+		if (getLSValue(options.upgrade.lpvSaved.value) != 0) {
+			if (getLSValue(options.upgrade.lpvSavedManual.value) != 0) {
+				addBookmarkButton();
+			} else {
+				storeCurrentPageInfos();
+			}
+		}
 	}
 });
 
