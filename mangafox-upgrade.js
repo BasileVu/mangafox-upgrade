@@ -171,6 +171,11 @@ var css = `
 	width: 10px;
 }
 
+.mu-greyed {
+	opacity: 0.4;
+    filter: alpha(opacity=40);
+}
+
 `;
 
 
@@ -331,6 +336,9 @@ function lastPagesInBookmark() {
 	var lpv = loadLPVFromLS();
 	
 	$('.series_grp .title .noexpand').each(function () {
+		
+		var lpvImg = $('<img src="http://mangafox.me/favicon.ico">');
+					
 		var mangaUrl = $(this).next().attr('href');
 		var mangaName = mangaUrl.match(/^http:\/\/mangafox\.me\/manga\/(.+)\/$/)[1];
 		
@@ -349,14 +357,20 @@ function lastPagesInBookmark() {
 			
 			text = (volume !== "" ? volume + " " : "") + chapter + " page " + lpvForManga.pageNumber;
 			urlLPV = prefix + "/" + mangaName + "/" + volume + "/" + chapter + "/" + page;
+			
+			lpvImg.click(function () {
+				//console.log(mangaName + " : " + text + " -> " + urlLPV);
+				$(this).attr('title', 'Last page visited : ' + text);
+				window.location.href = urlLPV;
+			});
+			
+		} else {
+			lpvImg.addClass('mu-greyed');
 		}
 		
 		var muLPV = $('<span></span>')
 					.attr('id', 'mu-last-pages-visited')
-					.append($('<img src="http://mangafox.me/favicon.ico">'))
-					.click(function () {
-						console.log(mangaName + " : " + text + " -> " + urlLPV);
-					});
+					.append(lpvImg);
 					
 		$(this).after(muLPV);
 	});
