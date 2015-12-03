@@ -359,8 +359,6 @@ function lastPagesInBookmark() {
 			urlLPV = prefix + "/" + mangaName + "/" + volume + "/" + chapter + "/" + page;
 			
 			lpvImg.click(function () {
-				//console.log(mangaName + " : " + text + " -> " + urlLPV);
-				$(this).attr('title', 'Last page visited : ' + text);
 				window.location.href = urlLPV;
 			});
 			
@@ -370,6 +368,7 @@ function lastPagesInBookmark() {
 		
 		var muLPV = $('<span></span>')
 					.attr('id', 'mu-last-pages-visited')
+					.attr('title', 'Last page visited : ' + text)
 					.append(lpvImg);
 					
 		$(this).after(muLPV);
