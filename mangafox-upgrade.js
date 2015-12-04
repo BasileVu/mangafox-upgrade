@@ -204,7 +204,7 @@ var css = `
 var lsPrefix = "mangafox-upgrade-userscript-";
 var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
 var showMenuKey = lsPrefix + "show-menu";
-var lastPagesVisitedKey = lsPrefix + "last-pages-visited"
+var lastPagesVisitedKey = lsPrefix + "last-pages-visited";
 
 var options = {
 	upgrade: {
@@ -371,7 +371,7 @@ function addBookmarkButton() {
 			lpv[curPage.mangaName] = curPage;
 			$(this).text('Bookmarked');
 		}
-		localStorage.setItem(lastPagesVisitedKey, JSON.stringify(lpv));
+		setLSVal(lastPagesVisitedKey, JSON.stringify(lpv));
 	});
 				 
 	if (isPageLPV()) {
@@ -393,7 +393,7 @@ function isPageLPV() {
 * Returns the object at the last page visited key, else an empty object.
 */
 function loadLPVFromLS() {
-	var lpv = localStorage.getItem(lastPagesVisitedKey);
+	var lpv = getLSVal(lastPagesVisitedKey);
 	if (lpv === null) {
 		lpv = {};
 	} else {
@@ -461,7 +461,7 @@ function storeCurrentPageInfos() {
 	// add current page url to localStorage
 	var lastPagesVisited = loadLPVFromLS();
 	lastPagesVisited[tokens.mangaName] = tokens;
-	localStorage.setItem(lastPagesVisitedKey, JSON.stringify(lastPagesVisited));
+	setLSVal(lastPagesVisitedKey, JSON.stringify(lastPagesVisited));
 }
 
 // Checks if webpage is a bookmark page
@@ -540,8 +540,8 @@ function getLSNum(key) {
 
 // Sum a number 'toAdd' with an already existant number in the localStorage at key 'key'.
 function sumLSValue(key, toAdd) {
-	var valInLS = getLSNum(key);
-	localStorage.setItem(key, toAdd + valInLS);
+	var num = getLSNum(key);
+	setLSVal(key, toAdd + num);
 }
 
 // Increments a value in the localStorage at key 'key'.
@@ -549,10 +549,10 @@ function incrLSValue(key) {
 	sumLSValue(key, 1);
 }
 
-// Toggle the value in the localStorage at key 'key'.
+// Toggle the numeric value in the localStorage at key 'key'.
 function toggleLSValue(key) {
-	var val = localStorage.getItem(key);
-	localStorage.setItem(key, (val == 0 || val === null ? 1 : 0));
+	var val = getLSNum(key);
+	setLSVal(key, (val == 0 ? 1 : 0));
 }
 
 // Swaps ACG and Bookmarks in the menu.
