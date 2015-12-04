@@ -253,7 +253,7 @@ var options = {
 
 // Done at start
 
-if (getLSValue(options.upgrade.leftBookmark.value) != 0) {
+if (getLSNum(options.upgrade.leftBookmark.value) != 0) {
 	$(document).bind("DOMSubtreeModified", swapACG);
 }
 
@@ -264,21 +264,21 @@ $(document).ready(function () {
 	
 	// All
 	
-	if (getLSValue(options.bug.blankPage.value) != 0) {
+	if (getLSNum(options.bug.blankPage.value) != 0) {
 		loadBlankPage();
 	}
 	
 	// Menu
 	addCss(css, createMuMenu);
 	
-	if (getLSValue(options.upgrade.leftBookmark.value) != 0) {
+	if (getLSNum(options.upgrade.leftBookmark.value) != 0) {
 		$(document).unbind("DOMSubtreeModified", swapACG);
 	}
 	
 	
 	// Bookmarks
 	
-	if (getLSValue(options.upgrade.highlightUpdate.value) != 0) {
+	if (getLSNum(options.upgrade.highlightUpdate.value) != 0) {
 		// This is here because mangafox do not update the visit unless you go to the manga's main page.
 		if (loadManga()) {
 			updateVisit();
@@ -288,7 +288,7 @@ $(document).ready(function () {
 	
 	// last pages visited button
 	if (isBookmarkUrl()) {
-		if (getLSValue(options.upgrade.lpvSaved.value) != 0) {
+		if (getLSNum(options.upgrade.lpvSaved.value) != 0) {
 			lastPagesInBookmark();
 		}
 	}
@@ -300,9 +300,9 @@ $(document).ready(function () {
 	if (isChapterUrl()) {
 
 		// enlarge big images and big images fix
-		if (getLSValue(options.upgrade.autoEnlarge.value) != 0) {
+		if (getLSNum(options.upgrade.autoEnlarge.value) != 0) {
 			enlargeOnlyBigImages();			
-		} else if (getLSValue(options.bug.nextPage.value) != 0) {
+		} else if (getLSNum(options.bug.nextPage.value) != 0) {
 			// keep native enlarge but remove it after one click (after big images are enlarged)
 			$('.read_img').click(function () {
 				$('.read_img a').attr('onclick', '');
@@ -310,8 +310,8 @@ $(document).ready(function () {
 		}
 		
 		// store this page in the localStorage according to the manga name
-		if (getLSValue(options.upgrade.lpvSaved.value) != 0) {
-			if (getLSValue(options.upgrade.lpvSavedManual.value) != 0) {
+		if (getLSNum(options.upgrade.lpvSaved.value) != 0) {
+			if (getLSNum(options.upgrade.lpvSavedManual.value) != 0) {
 				addBookmarkButton();
 			} else {
 				storeCurrentPageInfos();
@@ -322,7 +322,7 @@ $(document).ready(function () {
 
 // Done when everything ready
 $(window).load(function () {
-	if (isChapterUrl() && getLSValue(options.upgrade.preloadNext.value) != 0) {
+	if (isChapterUrl() && getLSNum(options.upgrade.preloadNext.value) != 0) {
 		preloadNext();
 	}
 });
@@ -523,15 +523,25 @@ function updateVisit() {
 	$.get(window.location.pathname.split('/').slice(0, 3).join('/'));
 }
 
+// Shorter than localStorage.getItem
+function getLSVal(key) {
+	return localStorage.getItem(key);
+}
+
+// Shorter than localStorage.setItem
+function setLSVal(key, val) {
+	localStorage.setItem(key, val);
+}
+
 // Return the numeric value of the localstorage at key 'key'.
-function getLSValue(key) {
-	var val = localStorage.getItem(key);
+function getLSNum(key) {
+	var val = getLSVal(key);
 	return (val === null ? 0 : Number(val));
 }
 
 // Sum a number 'toAdd' with an already existant number in the localStorage at key 'key'.
 function sumLSValue(key, toAdd) {
-	var valInLS = getLSValue(key);
+	var valInLS = getLSNum(key);
 	localStorage.setItem(key, toAdd + valInLS);
 }
 
@@ -710,7 +720,7 @@ function createMuMenu() {
 	var credit = $('<p id="mu-menu-credits"><a href="https://github.com/Flagoul/mangafox-upgrade" target="_blank">Mangafox-Upgrade</a> @ 2015</p>');
 
 	// Hides the menu depending on last access
-	if (getLSValue(showMenuKey) == 0) {
+	if (getLSNum(showMenuKey) == 0) {
 		menu.addClass('mu-menu-hide');
 		deployer.text('+');
 	}
@@ -769,7 +779,7 @@ function optionsTab(tab, name) {
 		var checkBox = $('<div></div>');
 		var desc = $('<td>' + value.description + '</td>').addClass('mu-option-description');
 
-		if (getLSValue(value.value) != 0) {
+		if (getLSNum(value.value) != 0) {
 			checkBox.addClass('checked');
 		}
 
