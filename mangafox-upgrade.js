@@ -430,7 +430,7 @@ function lastPagesInBookmark() {
 			
 			// change hover text and allows to go to lpv by clicking on image
 			text = (volume !== "" ? volume + " " : "") + chapter + " page " + lpvForManga.pageNumber;
-			urlLPV = prefix + "/" + mangaName + "/" + volume + "/" + chapter + "/" + page;
+			urlLPV = prefix + "/" + mangaName + "/" + (volume !== "" ? volume + "/" : "") + chapter + "/" + page;
 			
 			lpvImg.click(function () {
 				window.location.href = urlLPV;
