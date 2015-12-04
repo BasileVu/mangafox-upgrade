@@ -487,8 +487,7 @@ function tokenizeUrl() {
 		return null;
 	}
 	
-	var curPageUrl = window.location.href;
-	var values = curPageUrl.match(/^http:\/\/mangafox\.me\/manga\/(\w+)(?:\/v(\w+))?\/c([^\/]+)\/([0-9]+).html$/);
+	var values = window.location.pathname.match(/manga\/([^\/]+)(?:\/v(\w+))*\/c([^\/]+)\/([0-9]+).html$/);
 	
 	var tokens = {};
 	tokens.mangaName = values[1];
