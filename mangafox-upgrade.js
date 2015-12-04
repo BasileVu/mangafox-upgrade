@@ -1,9 +1,6 @@
 /* jshint -W097 */
 'use strict';
 
-// We check that the code is not run inside a frame
-if (window.top === window.self) {
-
 /********
 ** CSS **
 ********/
@@ -251,81 +248,86 @@ var options = {
 ** Load **
 *********/
 
-// Done at start
+// We check that the code is not run inside a frame
+if (window.top === window.self) {
+		
+	// Done at start
 
-if (getLSNum(options.upgrade.leftBookmark.value) != 0) {
-	$(document).bind("DOMSubtreeModified", swapACG);
-}
-
-// Done when DOM ready
-$(document).ready(function () {
-	
-	console.log("Mangafox upgrade successfully loaded.");
-	
-	// All
-	
-	if (getLSNum(options.bug.blankPage.value) != 0) {
-		loadBlankPage();
-	}
-	
-	// Menu
-	addCss(css, createMuMenu);
-	
-	if (getLSNum(options.upgrade.leftBookmark.value) != 0) {
-		$(document).unbind("DOMSubtreeModified", swapACG);
-	}
-	
-	
-	// Bookmarks
-	
-	if (getLSNum(options.upgrade.highlightUpdate.value) != 0) {
-		// This is here because mangafox do not update the visit unless you go to the manga's main page.
-		if (loadManga()) {
-			updateVisit();
-		}
-		highlightUpdate();
-	}
-	
-	// last pages visited button
-	if (isBookmarkUrl()) {
-		if (getLSNum(options.upgrade.lpvSaved.value) != 0) {
-			lastPagesInBookmark();
-		}
+	if (getLSNum(options.upgrade.leftBookmark.value) !== 0) {
+		$(document).bind("DOMSubtreeModified", swapACG);
 	}
 
-	
-	// Reading
-
-	// Check if this is a chapter page
-	if (isChapterUrl()) {
-
-		// enlarge big images and big images fix
-		if (getLSNum(options.upgrade.autoEnlarge.value) != 0) {
-			enlargeOnlyBigImages();			
-		} else if (getLSNum(options.bug.nextPage.value) != 0) {
-			// keep native enlarge but remove it after one click (after big images are enlarged)
-			$('.read_img').click(function () {
-				$('.read_img a').attr('onclick', '');
-			});
+	// Done when DOM ready
+	$(document).ready(function () {
+		
+		console.log("Mangafox upgrade successfully loaded.");
+		
+		// All
+		
+		if (getLSNum(options.bug.blankPage.value) !== 0) {
+			loadBlankPage();
 		}
 		
-		// store this page in the localStorage according to the manga name
-		if (getLSNum(options.upgrade.lpvSaved.value) != 0) {
-			if (getLSNum(options.upgrade.lpvSavedManual.value) != 0) {
-				addBookmarkButton();
-			} else {
-				storeCurrentPageInfos();
+		// Menu
+		addCss(css, createMuMenu);
+		
+		if (getLSNum(options.upgrade.leftBookmark.value) !== 0) {
+			$(document).unbind("DOMSubtreeModified", swapACG);
+		}
+		
+		
+		// Bookmarks
+		
+		if (getLSNum(options.upgrade.highlightUpdate.value) !== 0) {
+			// This is here because mangafox do not update the visit unless you go to the manga's main page.
+			if (loadManga()) {
+				updateVisit();
+			}
+			highlightUpdate();
+		}
+		
+		// last pages visited button
+		if (isBookmarkUrl()) {
+			if (getLSNum(options.upgrade.lpvSaved.value) !== 0) {
+				lastPagesInBookmark();
 			}
 		}
-	}
-});
 
-// Done when everything ready
-$(window).load(function () {
-	if (isChapterUrl() && getLSNum(options.upgrade.preloadNext.value) != 0) {
-		preloadNext();
-	}
-});
+		
+		// Reading
+
+		// Check if this is a chapter page
+		if (isChapterUrl()) {
+
+			// enlarge big images and big images fix
+			if (getLSNum(options.upgrade.autoEnlarge.value) !== 0) {
+				enlargeOnlyBigImages();			
+			} else if (getLSNum(options.bug.nextPage.value) !== 0) {
+				// keep native enlarge but remove it after one click (after big images are enlarged)
+				$('.read_img').click(function () {
+					$('.read_img a').attr('onclick', '');
+				});
+			}
+			
+			// store this page in the localStorage according to the manga name
+			if (getLSNum(options.upgrade.lpvSaved.value) !== 0) {
+				if (getLSNum(options.upgrade.lpvSavedManual.value) !== 0) {
+					addBookmarkButton();
+				} else {
+					storeCurrentPageInfos();
+				}
+			}
+		}
+	});
+
+	// Done when everything ready
+	$(window).load(function () {
+		if (isChapterUrl() && getLSNum(options.upgrade.preloadNext.value) !== 0) {
+			preloadNext();
+		}
+	});
+
+} // end [if not in frame]
 
 
 /**************
@@ -501,7 +503,7 @@ function tokenizeUrl() {
 // Check if the user just went to a manga chapter
 function loadManga() {
 	// If there is no referrer it is probably a refresh
-	if (document.referrer == "") {
+	if (document.referrer === "") {
 		return false;
 	}
 
@@ -552,7 +554,7 @@ function incrLSValue(key) {
 // Toggle the numeric value in the localStorage at key 'key'.
 function toggleLSValue(key) {
 	var val = getLSNum(key);
-	setLSVal(key, (val == 0 ? 1 : 0));
+	setLSVal(key, (val === 0 ? 1 : 0));
 }
 
 // Swaps ACG and Bookmarks in the menu.
@@ -638,7 +640,7 @@ function preloadNext() {
 		var imgPath = nextPageHTML.match(/[.\s]+<div class="read_img">.+\s+<img src="([^"]+)"/);
 		
 		// If we cannot get the image, we do nothing (Have to be improve for blank pages)
-		if (imgPath != null) {
+		if (imgPath !== null) {
 			imgPath = imgPath[1];
 
 			// since the cdn doesn't allow us to get img, we preload it by putting it directly hidden in body
@@ -719,7 +721,7 @@ function createMuMenu() {
 	var credit = $('<p id="mu-menu-credits"><a href="https://github.com/Flagoul/mangafox-upgrade" target="_blank">Mangafox-Upgrade</a> @ 2015</p>');
 
 	// Hides the menu depending on last access
-	if (getLSNum(showMenuKey) == 0) {
+	if (getLSNum(showMenuKey) === 0) {
 		menu.addClass('mu-menu-hide');
 		deployer.text('+');
 	}
@@ -778,7 +780,7 @@ function optionsTab(tab, name) {
 		var checkBox = $('<div></div>');
 		var desc = $('<td>' + value.description + '</td>').addClass('mu-option-description');
 
-		if (getLSNum(value.value) != 0) {
+		if (getLSNum(value.value) !== 0) {
 			checkBox.addClass('checked');
 		}
 
@@ -795,5 +797,3 @@ function optionsTab(tab, name) {
 	op.append(content);
 	tab.append(op);
 }
-
-} // end [if not in frame]
