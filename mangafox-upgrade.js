@@ -626,11 +626,16 @@ function preloadNext() {
 	
 	// load next image
 	$.get(nextPageHref, function (nextPageHTML) {
-		var imgPath = nextPageHTML.match(/[.\s]+<div class="read_img">.+\s+<img src="([^"]+)"/)[1];
+		var imgPath = nextPageHTML.match(/[.\s]+<div class="read_img">.+\s+<img src="([^"]+)"/);
 		
-		// since the cdn doesn't allow us to get img, we preload it by putting it directly hidden in body
-		$('body').append('<img id="mu-preload-img" src="' + imgPath + '">');
-		$('#mu-preload-img').hide();
+		// If we cannot get the image, we do nothing (Have to be improve for blank pages)
+		if (imgPath != null) {
+			imgPath = imgPath[1];
+
+			// since the cdn doesn't allow us to get img, we preload it by putting it directly hidden in body
+			$('body').append('<img id="mu-preload-img" src="' + imgPath + '">');
+			$('#mu-preload-img').hide();
+		}
 	});
 }
 
