@@ -523,16 +523,16 @@ function updateVisit() {
 	$.get(window.location.pathname.split('/').slice(0, 3).join('/'));
 }
 
-// Return the value of the localstorage at key 'key'.
+// Return the numeric value of the localstorage at key 'key'.
 function getLSValue(key) {
 	var val = localStorage.getItem(key);
-	return (val === null ? 0 : val);
+	return (val === null ? 0 : Number(val));
 }
 
 // Sum a number 'toAdd' with an already existant number in the localStorage at key 'key'.
 function sumLSValue(key, toAdd) {
-	var valInLS = localStorage.getItem(key);
-	localStorage.setItem(key, toAdd + (valInLS === null ? 0 : valInLS));
+	var valInLS = getLSValue(key);
+	localStorage.setItem(key, toAdd + valInLS);
 }
 
 // Increments a value in the localStorage at key 'key'.
