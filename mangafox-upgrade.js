@@ -197,7 +197,7 @@ var css = `
 ** LocalStorage **
 ******************/
 
-// localStorage prefix to avoid conflict if site uses locastorage as well
+// localStorage prefix to avoid conflict if site uses localStorage as well
 var lsPrefix = "mangafox-upgrade-userscript-";
 var numBlankPagesCorrectedKey = lsPrefix + "num-blankpages-corrected";
 var showMenuKey = lsPrefix + "show-menu";
@@ -251,12 +251,13 @@ var options = {
 // We check that the code is not run inside a frame
 if (window.top === window.self) {
 		
-	// Done at start
-
-	if (getLSNum(options.upgrade.leftBookmark.value) !== 0) {
-		$(document).bind("DOMSubtreeModified", swapACG);
-	}
-
+	// Done when the menu is loaded
+	$('#menu').ready(function() {
+		if (getLSNum(options.upgrade.leftBookmark.value) !== 0) {
+			swapBookmark();
+		}
+	});
+	
 	// Done when DOM ready
 	$(document).ready(function () {
 		
@@ -270,10 +271,6 @@ if (window.top === window.self) {
 		
 		// Menu
 		addCss(css, createMuMenu);
-		
-		if (getLSNum(options.upgrade.leftBookmark.value) !== 0) {
-			$(document).unbind("DOMSubtreeModified", swapACG);
-		}
 		
 		
 		// Bookmarks
@@ -557,17 +554,21 @@ function toggleLSValue(key) {
 	setLSVal(key, (val === 0 ? 1 : 0));
 }
 
-// Swaps ACG and Bookmarks in the menu.
-function swapACG() {
-	var last = $('#menu li').last();
-	
-	if (last.text() === "ACG Topics") {
-		var bookmark = last.prev();
-		
-		last.removeClass('right');
-		bookmark.addClass('right');
-		
-		last.insertBefore(bookmark);
+// Place the Bookmark link in the menu on the right.
+function swapBookmark() {
+	var menu = $('#menu li');
+
+	if (menu.last().text() != "Bookmark") {
+		menu.last().removeClass('right');
+
+		for (var i = 0; i < menu.length; ++i)
+		{
+			if (menu.eq(i).text() === "Bookmark") {
+				menu.eq(i).addClass('right');
+				menu.eq(i).insertAfter(menu.last());
+				return ;
+			}			
+		}
 	}
 }
 
