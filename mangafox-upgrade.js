@@ -423,7 +423,7 @@ function lastPagesInBookmark() {
         var lpvImg = $('<img src="https://mangafox.me/favicon.ico">');
 
         var mangaUrl = $(this).next().attr('href');
-        var mangaName = mangaUrl.match(/^https:\/\/mangafox\.me\/manga\/(.+)\/$/)[1];
+        var mangaName = mangaUrl.match(/^\/\/mangafox\.me\/manga\/(.+)\/$/)[1];
 
         // default values
         var text = "Not read yet";
@@ -691,8 +691,7 @@ function highlightUpdate() {
 }
 
 // Convert mangafox bookmarks date to time
-function convertToTime(date)
-{
+function convertToTime(date) {   
     var regExpDate = /(Today|Yesterday|(\w+)\s(\d+),\s(\d+))\s(\d+):(\d+)(am|pm)/i;
     var time = regExpDate.exec(date);
 
