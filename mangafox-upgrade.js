@@ -14,8 +14,8 @@
 'use strict';
 
 /********
-** CSS **
-********/
+ ** CSS **
+ ********/
 
 const css = `
 /* The following is the css for Mangafox-Upgrade */
@@ -253,21 +253,21 @@ const options = {
 
 
 /*********
-** Load **
-*********/
+ ** Load **
+ *********/
 
 // We check that the code is not run inside a frame
 if (window.top === window.self) {
 
     // Done when the menu is loaded
-    $('#menu').ready(function() {
+    $('#menu').ready(() => {
         if (getLSNum(options.upgrade.leftBookmark.value) !== 0) {
             swapBookmark();
         }
     });
 
     // Done when DOM ready
-    $(document).ready(function () {
+    $(document).ready(() => {
 
         console.log("Mangafox upgrade successfully loaded.");
 
@@ -309,7 +309,7 @@ if (window.top === window.self) {
                 enlargeOnlyBigImages();
             } else if (getLSNum(options.bug.nextPage.value) !== 0) {
                 // keep native enlarge but remove it after one click (after big images are enlarged)
-                $('.read_img').click(function () {
+                $('.read_img').click(() => {
                     $('.read_img a').attr('onclick', '');
                 });
             }
@@ -326,7 +326,7 @@ if (window.top === window.self) {
     });
 
     // Done when everything ready
-    $(window).load(function () {
+    $(window).load(() => {
         if (isChapterUrl() && getLSNum(options.upgrade.preloadNext.value) !== 0) {
             preloadNext();
         }
@@ -336,8 +336,8 @@ if (window.top === window.self) {
 
 
 /**************
-** Functions **
-**************/
+ ** Functions **
+ **************/
 
 // Add css style in the head
 function addCss(css, callback) {
@@ -346,9 +346,9 @@ function addCss(css, callback) {
     // If the css does not exist, we create and add it
     if (!style.length) {
         style = $('<style></style>')
-        .attr('type', "text/css")
-        .attr('id', "mu-css")
-        .text(css);
+            .attr('type', "text/css")
+            .attr('id', "mu-css")
+            .text(css);
 
         $('head').append(style);
     } else {
@@ -361,22 +361,22 @@ function addCss(css, callback) {
 // Adds the button bookmark on reading pages.
 function addBookmarkButton() {
     const button = $('<div></div>')
-                .attr('id', 'mu-bookmark-page-button')
-                .attr('title', 'Save this page as last page visited for this manga')
-                .text('Bookmark');
+        .attr('id', 'mu-bookmark-page-button')
+        .attr('title', 'Save this page as last page visited for this manga')
+        .text('Bookmark');
 
     // action for button
-    button.click(function () {
+    button.click((e) => {
         const curPage = tokenizeUrl();
         const lpv = loadLPVFromLS();
 
         // if bookmarked
         if (JSON.stringify(curPage) === JSON.stringify(lpv[curPage.mangaName])) {
             delete lpv[curPage.mangaName];
-            $(this).text('Bookmark');
+            $(e.currentTarget).text('Bookmark');
         } else {
             lpv[curPage.mangaName] = curPage;
-            $(this).text('Bookmarked');
+            $(e.currentTarget).text('Bookmarked');
         }
         setLSVal(lastPagesVisitedKey, JSON.stringify(lpv));
     });
@@ -396,9 +396,9 @@ function isPageLPV() {
 }
 
 /**
-* Loads the object representing the last pages visited stored in the localStorage.
-* Returns the object at the last page visited key, else an empty object.
-*/
+ * Loads the object representing the last pages visited stored in the localStorage.
+ * Returns the object at the last page visited key, else an empty object.
+ */
 function loadLPVFromLS() {
     let lpv = getLSVal(lastPagesVisitedKey);
     if (lpv === null) {
@@ -414,11 +414,11 @@ function lastPagesInBookmark() {
 
     const lpv = loadLPVFromLS();
 
-    $('.series_grp .title .noexpand').each(function () {
+    $('.series_grp .title .noexpand').map((i, el) => {
 
         const lpvImg = $('<img src="https://mangafox.me/favicon.ico">');
 
-        const mangaUrl = $(this).next().attr('href');
+        const mangaUrl = $(el).next().attr('href');
         const mangaName = mangaUrl.match(/^\/\/mangafox\.me\/manga\/(.+)\/$/)[1];
 
         // default values
@@ -439,7 +439,7 @@ function lastPagesInBookmark() {
             text = (volume !== "" ? volume + " " : "") + chapter + " page " + lpvForManga.pageNumber;
             urlLPV = prefix + "/" + mangaName + "/" + (volume !== "" ? volume + "/" : "") + chapter + "/" + page;
 
-            lpvImg.click(function () {
+            lpvImg.click(() => {
                 window.location.href = urlLPV;
             });
 
@@ -453,7 +453,7 @@ function lastPagesInBookmark() {
             .attr('title', 'Last page visited : ' + text)
             .append(lpvImg);
 
-        $(this).after(muLPV);
+        $(el).after(muLPV);
     });
 }
 
@@ -483,12 +483,12 @@ function isChapterUrl() {
 }
 
 /**
-* Gets the different infos from url.
-* Returns :
-* - null if not a chapter url
-* - the current url, name of the manga, volume number, chapter number and page number otherwise.
-*   The volume number is 'null' if the manga does not have volumes.
-*/
+ * Gets the different infos from url.
+ * Returns :
+ * - null if not a chapter url
+ * - the current url, name of the manga, volume number, chapter number and page number otherwise.
+ *   The volume number is 'null' if the manga does not have volumes.
+ */
 function tokenizeUrl() {
     if (!isChapterUrl()) {
         return null;
@@ -582,7 +582,7 @@ function swapBookmark() {
 // Loads page via ajax if the body tag is empty.
 function loadBlankPage() {
     if ($('body').is(':empty')) {
-        $.get(window.location.href, function (res) {
+        $.get(window.location.href, (res) => {
             document.write(res);
 
             incrLSValue(numBlankPagesCorrectedKey);
@@ -644,7 +644,7 @@ function preloadNext() {
     const nextPageHref = (currentPage !== totalPages ? $('.read_img a').attr('href') : nextChaptFirstHref);
 
     // load next image
-    $.get(nextPageHref, function (nextPageHTML) {
+    $.get(nextPageHref, (nextPageHTML) => {
         let imgPath = nextPageHTML.match(/[.\s]+<div class="read_img">.+\s+<img src="([^"]+)"/);
 
         // If we cannot get the image, we do nothing (Have to be improve for blank pages)
@@ -667,9 +667,9 @@ function highlightUpdate() {
         return ;
     }
 
-    bookmarks.each(function() {
-        const lastUpdateRaw = $(this).find('dl dt em span.timing');
-        const lastVisitRaw = $(this).find('h2 em span.timing');
+    bookmarks.map((i, el) => {
+        const lastUpdateRaw = $(el).find('dl dt em span.timing');
+        const lastVisitRaw = $(el).find('h2 em span.timing');
 
         // If one of the information is missing, we skip this bookmark
         if (!lastUpdateRaw.length || !lastVisitRaw.length) {
@@ -680,7 +680,7 @@ function highlightUpdate() {
         const lastVisit = convertToTime(lastVisitRaw.text());
 
         if (lastUpdate > lastVisit) {
-            $(this).addClass('mu-update-color');
+            $(el).addClass('mu-update-color');
         }
     });
 }
@@ -708,8 +708,8 @@ function convertToTime(date) {
 }
 
 /*********
-** Menu **
-*********/
+ ** Menu **
+ *********/
 
 // Create the menu for Mangafox-Upgrade
 function createMuMenu() {
@@ -739,26 +739,27 @@ function createMuMenu() {
 
     /* Events */
 
-    $.each(tabs, function(index, value) {
-        value.click(function() {
+    $.each(tabs, (index, value) => {
+        value.click((e) => {
             const muTabContent = $('.mu-tab-content');
             $('.mu-tab').removeClass('mu-tab-selected');
             muTabContent.removeClass('mu-tab-content-display');
 
-            $(this).addClass('mu-tab-selected');
+            $(e.currentTarget).addClass('mu-tab-selected');
             muTabContent.eq(index).addClass('mu-tab-content-display');
         });
         tabsMenu.append(value);
     });
 
     // Show/hide menu when deployer is clicked
-    deployer.click(function() {
-        $(this).parent().toggleClass('mu-menu-hide');
+    deployer.click((e) => {
+        $this = $(e.currentTarget);
+        $this.parent().toggleClass('mu-menu-hide');
         toggleLSValue(showMenuKey);
-        if ($(this).parent().hasClass('mu-menu-hide')) {
-            $(this).text('+');
+        if ($this.parent().hasClass('mu-menu-hide')) {
+            $this.text('+');
         } else {
-            $(this).text('-');
+            $this.text('-');
         }
     });
 
@@ -768,7 +769,7 @@ function createMuMenu() {
     optionsTab(tabsContent[1], 'bug');
 
     content.append(tabsMenu);
-    $.each(tabsContent, function(index, value) {
+    $.each(tabsContent, (index, value) => {
         content.append(value);
     });
     content.append(credit);
@@ -782,7 +783,7 @@ function optionsTab(tab, name) {
     const op = $('<table></table>').addClass("mu-options");
     const content = $('<tbody></tbody>');
 
-    $.each(options[name], function(index, value) {
+    $.each(options[name], (index, value) => {
         const newOption = $('<tr></tr>');
         const checkBoxCell = $('<td></td>').addClass('mu-option-checkbox').addClass('noselect');
         const checkBox = $('<div></div>');
@@ -792,8 +793,8 @@ function optionsTab(tab, name) {
             checkBox.addClass('checked');
         }
 
-        checkBox.click(function() {
-            $(this).toggleClass('checked');
+        checkBox.click((e) => {
+            $(e.currentTarget).toggleClass('checked');
             toggleLSValue(value.value);
         });
 
