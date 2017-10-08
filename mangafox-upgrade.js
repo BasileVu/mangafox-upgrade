@@ -48,7 +48,7 @@ var css = `
     height: 25px;
     top: 0;
     left: 0;
-    background-image: url("http://mangafox.me/favicon.ico");
+    background-image: url("https://mangafox.me/favicon.ico");
     background-repeat: no-repeat;
     background-size: 25px 25px;
     border: solid #717D8C 1px;
@@ -420,10 +420,10 @@ function lastPagesInBookmark() {
 
     $('.series_grp .title .noexpand').each(function () {
 
-        var lpvImg = $('<img src="http://mangafox.me/favicon.ico">');
+        var lpvImg = $('<img src="https://mangafox.me/favicon.ico">');
 
         var mangaUrl = $(this).next().attr('href');
-        var mangaName = mangaUrl.match(/^http:\/\/mangafox\.me\/manga\/(.+)\/$/)[1];
+        var mangaName = mangaUrl.match(/^https:\/\/mangafox\.me\/manga\/(.+)\/$/)[1];
 
         // default values
         var text = "Not read yet";
@@ -434,7 +434,7 @@ function lastPagesInBookmark() {
 
             var lpvForManga = lpv[mangaName];
 
-            var prefix = "http://mangafox.me/manga";
+            var prefix = "https://mangafox.me/manga";
             var volume = lpvForManga.volumeNumber !== null ? "v" + lpvForManga.volumeNumber : "";
             var chapter = "c" + lpvForManga.chapterNumber;
             var page = lpvForManga.pageNumber + ".html";
@@ -477,7 +477,7 @@ function storeCurrentPageInfos() {
 
 // Checks if webpage is a bookmark page
 function isBookmarkUrl() {
-    return window.location.href.match(/^http:\/\/mangafox\.me\/bookmark\//) !== null;
+    return window.location.href.match(/^https:\/\/mangafox\.me\/bookmark\//) !== null;
 }
 
 // Checks if webpage is a chapter's page
@@ -644,7 +644,7 @@ function preloadNext() {
     }
 
     // next page href
-    var mangaPath = document.location.href.match(/^(http:\/\/mangafox\.me\/manga\/\w+\/)/i)[1];
+    var mangaPath = document.location.href.match(/^(https:\/\/mangafox\.me\/manga\/\w+\/)/i)[1];
     var nextChaptFirstHref = mangaPath + nextChapter + "/1.html";
     var nextPageHref = (currentPage != totalPages ? $('.read_img a').attr('href') : nextChaptFirstHref);
 
